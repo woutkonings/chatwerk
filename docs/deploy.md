@@ -1,6 +1,6 @@
 # music-chat: deploy to vps-main
 
-Status 2026-10-10: deployed at https://dj-gen.woutkonings.com. The code is a copy (rsync) in `/root/dj-gen` on vps-main. There is no git repo on the server.
+Status 2026-10-10: deployed at https://dj-gen.woutkonings.com. The code is a checkout of the public repo https://github.com/woutkonings/music-chat in `/root/dj-gen` on vps-main.
 
 This procedure follows the vps-main runbook (`~/personal_repos/personal-life/vps-main/RUNBOOK.md`, section "Deploy a new project"). Read the runbook first. The server uses nginx and certbot, not Caddy.
 
@@ -9,7 +9,7 @@ This procedure follows the vps-main runbook (`~/personal_repos/personal-life/vps
 | Decision | Choice |
 |---|---|
 | Subdomain | `dj-gen.woutkonings.com` |
-| Code on the server | A copy with rsync in `/root/dj-gen`. A GitHub repo with a deploy key is a later option. |
+| Code on the server | A git checkout of the public repo in `/root/dj-gen`. The repo is public (AGPL), so the server pulls over HTTPS and needs no deploy key. |
 | API key | The same key as the local `.env` ("Wout's Individual Org"). |
 | Daily model budget | The default, 1 dollar (`MUSIC_CHAT_DAILY_USD`). One turn costs about 0.0003 to 0.001 dollars, so this allows about 1,000 to 3,000 turns per day. |
 | Local port | `8787` on `127.0.0.1`. |
@@ -18,10 +18,7 @@ This procedure follows the vps-main runbook (`~/personal_repos/personal-life/vps
 
 1. **DNS.** In Namecheap, add an A record `dj-gen` with the value `162.55.164.152`. Wait until `dig +short dj-gen.woutkonings.com` gives that address.
 2. **Backup.** The change only adds a container and an nginx site, so a manual backup is optional. Hetzner makes a daily backup.
-3. **Code.** Clone the repo to `/root/dj-gen` with a deploy key (runbook, "Deploy keys"), or copy it:
-   ```
-   rsync -az --exclude .git --exclude node_modules --exclude dist --exclude data --exclude .env ./ vps:/root/dj-gen/
-   ```
+3. **Code.** On the server: `git clone https://github.com/woutkonings/music-chat.git /root/dj-gen`.
 4. **Secrets.** Copy the local `.env` to the server, readable only by root. From the repo folder on your computer:
    ```
    ssh vps 'umask 077 && cat > /root/dj-gen/.env' < .env
@@ -79,12 +76,13 @@ The `Host` header must reach the app unchanged: the app accepts a WebSocket only
 
 On the server:
 
-From the repo folder on your computer (the `.env` on the server stays):
+Push the change to GitHub first. Then:
 
 ```
-rsync -az --delete --exclude .git --exclude node_modules --exclude dist --exclude data --exclude .env --exclude '*.sqlite' ./ vps:/root/dj-gen/
-ssh vps 'cd /root/dj-gen && docker compose up -d --build'
+ssh vps 'cd /root/dj-gen && git pull && docker compose up -d --build'
 ```
+
+The `.env` on the server is not in git, so a pull does not touch it.
 
 ## 5. Operations
 
