@@ -166,8 +166,8 @@ The default theme is "flyer" on `:root` and `:root[data-theme='flyer']`. To add 
 
 | Component | Data |
 |---|---|
-| `TopBar` (with `InviteButton`, `ConnectionStatus`, `Presence`) | room id, connection status (a dot and a word), listeners |
-| `RoomTabs` | phone only: the stage or the chat view, the unread count, play and stop |
+| `TopBar` (with `InviteButton`, `ConnectionStatus`, `Presence`) | the logo, room id, connection status (a dot and a word), listeners. On a phone the logo shows the robot mark only, so the room id has space |
+| `RoomTabs` | phone only: the stage or the chat view, the unread count, play and stop. The play button of the bar shows only while the big play button of the stage is off screen (`playTarget`), so the screen never shows two play buttons |
 | `Transport` (with `SongReadouts`, `BeatLights`) | a round blue play button, the tempo as the biggest number, key, swing, version, volume, four beat dots |
 | `SetTimeline` | `SetState`, the room cycle, bpm: the phase name with the halftone sun, readouts, and the timetable of blocks (the top edge of a block follows the energy ramp; the current block has a pink screen and a pink outline; the playhead is a pink line). A click on a phase sends "Move the set to the <phase> now" to the band. |
 | `SuggestionBar`, `SuggestionChip` | `SuggestionState`, `mineVotes`, the notice, the room cycle and my name; `applySuggestion` and `voteSuggestion` |
@@ -209,7 +209,7 @@ The default theme is "flyer" on `:root` and `:root[data-theme='flyer']`. To add 
 
 - **Desktop (960px and wider):** the top bar, then the stage (flexible) and the chat column (380px, sticky, full height under the top bar, a hairline on its left). The footer sits at the bottom of the stage.
 - **Stage:** the deck (transport and set), the ideas under it, the band (next to them on a wide stage), the line-up, the code and the versions. Sections sit 48 to 64px apart.
-- **Phone and small tablet (under 960px):** the top bar, then the room tabs (play or stop, Stage with the phase, Chat with the unread count). One view at a time. A server notice shows at the top of the stage when the chat is hidden. The room works at 375px wide.
+- **Phone and small tablet (under 960px):** the top bar, then the room tabs (play or stop, Stage with the phase, Chat with the unread count). One view at a time. The play button of the tabs closes while the big play button of the transport is on screen, and opens when you scroll past it or open the chat. A server notice shows at the top of the stage when the chat is hidden. The room works at 375px wide.
 
 ## 7. Rules
 

@@ -102,7 +102,8 @@
     gap: var(--space-3);
   }
 
-  .topbar .logo__word {
+  /* On a phone the robot mark stands for the name, so the room name has space. The link keeps its label. */
+  .topbar .logo .wordmark {
     display: none;
   }
 
