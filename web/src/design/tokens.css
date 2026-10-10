@@ -1,0 +1,236 @@
+/*
+ * Design tokens of Chatwerk: the "Flyer" theme.
+ * A club flyer printed in two inks (blue and fluorescent pink) on uncoated paper.
+ * Three layers:
+ *   1. Primitives: raw values (the paper, the two inks and their screens, sizes). Components never use these.
+ *   2. Semantic tokens: what a value means (--color-text, --color-accent). A theme overrides only this layer,
+ *      under :root[data-theme='<name>'].
+ *   3. Component tokens: local custom properties inside a component (for example --button-bg).
+ * docs/design-system.md has the rules.
+ */
+
+:root {
+  /* ---------- 1. Primitives ---------- */
+
+  /* Uncoated paper. */
+  --paper-50: #f8f5ef;
+  --paper-100: #f3efe7;
+  --paper-200: #e9e4d9;
+  --paper-300: #ddd6c8;
+
+  /* Ink 1: riso blue, and its screens (lighter prints of the same ink). */
+  --blue: #2d3fd3;
+  --blue-deep: #2433b8;
+  --blue-60: #4b56b4; /* 5.6:1 on paper: the lowest screen for text */
+  --blue-35: #8a90c6; /* decoration only */
+  --blue-20: #c9cbe3;
+  --blue-10: #e2e3f2;
+
+  /* Ink 2: fluorescent pink. The bright ink is for fills; the deep ink is for text and lines. */
+  --pink: #ff4fa6; /* 2.7:1 on paper: fills behind blue text, never text */
+  --pink-deep: #c2106f; /* 5.1:1 on paper */
+  --pink-20: #fbd9e8;
+  --pink-10: #fdeaf2;
+
+  /* ---------- Typography ---------- */
+
+  --font-sans: 'Bricolage Grotesque Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: var(--font-sans);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; /* code only */
+
+  /* The type scale (rem; 1rem = 16px). */
+  --text-xs: 0.75rem; /* 12px: fine print */
+  --text-sm: 0.875rem; /* 14px: meta, labels */
+  --text-md: 1rem; /* 16px: body */
+  --text-lg: 1.125rem; /* 18px: lead text, idea labels */
+  --text-xl: 1.375rem; /* 22px: section titles */
+  --text-2xl: 1.75rem; /* 28px: layer names */
+  --text-3xl: 2.5rem; /* 40px */
+  --text-4xl: 3.5rem; /* 56px: bpm, the phase, the energy */
+  --text-5xl: 5rem; /* 80px */
+  --text-hero: clamp(3.5rem, 11vw, 9rem);
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-black: 800;
+
+  --leading-none: 0.9;
+  --leading-tight: 1.05;
+  --leading-snug: 1.25;
+  --leading-normal: 1.45;
+  --leading-relaxed: 1.6;
+
+  --tracking-display: -0.04em; /* large type sits tight, like a poster */
+  --tracking-tight: -0.015em;
+  --tracking-normal: 0;
+
+  /* ---------- Space, size, shape ---------- */
+
+  --space-px: 1px;
+  --space-0-5: 2px;
+  --space-1: 4px;
+  --space-1-5: 6px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  --size-control-sm: 32px;
+  --size-control-md: 40px;
+  --size-control-lg: 52px;
+  --size-touch: 44px; /* the smallest tap target on touch screens */
+  --size-play: 72px;
+
+  --radius-none: 0;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  --border-width: 1px;
+  --border-width-strong: 1.5px;
+  --rule-width: 2px; /* the strong rule on top of a section */
+
+  /* ---------- Motion ---------- */
+
+  --duration-instant: 80ms;
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 420ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.6, 0, 0.4, 1);
+  --ease-linear: linear;
+
+  /* ---------- Layers ---------- */
+
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 10;
+  --z-overlay: 100;
+  --z-toast: 200;
+
+  /* ---------- Layout ---------- */
+
+  /* Breakpoints. Media queries cannot read custom properties, so these document the values.
+     sm 480px (large phone), md 760px (tablet), lg 960px (the room gets two columns), xl 1280px. */
+  --bp-sm: 480px;
+  --bp-md: 760px;
+  --bp-lg: 960px;
+  --bp-xl: 1280px;
+  --page-max: 1440px;
+  --gutter: var(--space-5);
+  --topbar-height: 64px;
+  --chat-width: 380px;
+}
+
+@media (min-width: 960px) {
+  :root {
+    --gutter: var(--space-12);
+  }
+}
+
+/* ---------- 2. Semantic tokens: the "Flyer" theme (default) ---------- */
+
+:root,
+:root[data-theme='flyer'] {
+  color-scheme: light;
+
+  --color-bg: var(--paper-100);
+  --color-bg-sunken: var(--paper-200); /* a well: code, the empty set */
+  --color-surface-1: var(--paper-100); /* sections are paper, not boxes */
+  --color-surface-2: var(--paper-50); /* fields, floating things */
+  --color-surface-3: var(--blue-10); /* hover */
+
+  --color-border-subtle: var(--blue-10);
+  --color-border: var(--blue-20); /* hairline rules between rows */
+  --color-border-strong: var(--blue); /* the rule on top of a section */
+  --color-border-control: var(--blue); /* the edge of a field or a switch */
+
+  --color-text: var(--blue);
+  --color-text-secondary: var(--blue-deep);
+  --color-text-muted: var(--blue-60);
+  --color-text-faint: var(--blue-35); /* decoration and disabled text only */
+  --color-text-inverse: var(--paper-100);
+
+  /* Actions are printed in blue: Play, Send, the primary button. */
+  --color-action: var(--blue);
+  --color-action-hover: var(--blue-deep);
+  --color-action-ink: var(--paper-100); /* text on an action fill */
+
+  /* Pink marks what is now: the current phase, the playhead, the energy, the ideas, the band. Use it sparingly. */
+  --color-accent: var(--pink-deep); /* text and lines */
+  --color-accent-fill: var(--pink); /* fills behind blue text, shapes */
+  --color-accent-soft: var(--pink-20);
+  --color-accent-wash: var(--pink-10);
+
+  /* The band speaks in pink. */
+  --color-band: var(--pink-deep);
+  --color-band-soft: var(--pink-10);
+
+  /* Two inks only: warnings and errors are pink ink with an icon and a sentence. */
+  --color-warn: var(--pink-deep);
+  --color-warn-soft: var(--pink-10);
+  --color-danger: var(--pink-deep);
+  --color-danger-soft: var(--pink-20);
+
+  /* Local mixer keys. */
+  --color-mute: var(--blue);
+  --color-solo: var(--pink-deep);
+
+  /* Layer roles. In this theme the role name and the shape of the pattern identify a layer, not a colour. */
+  --color-role-drums: var(--blue);
+  --color-role-perc: var(--blue);
+  --color-role-bass: var(--blue);
+  --color-role-chords: var(--blue);
+  --color-role-pad: var(--blue);
+  --color-role-lead: var(--blue);
+  --color-role-arp: var(--blue);
+  --color-role-fx: var(--blue);
+
+  /* Energy 1 to 10: from blue (cool) to pink (hot), as the two inks mix. */
+  --color-energy-1: var(--blue);
+  --color-energy-2: color-mix(in oklab, var(--pink-deep) 11%, var(--blue));
+  --color-energy-3: color-mix(in oklab, var(--pink-deep) 22%, var(--blue));
+  --color-energy-4: color-mix(in oklab, var(--pink-deep) 33%, var(--blue));
+  --color-energy-5: color-mix(in oklab, var(--pink-deep) 44%, var(--blue));
+  --color-energy-6: color-mix(in oklab, var(--pink-deep) 56%, var(--blue));
+  --color-energy-7: color-mix(in oklab, var(--pink-deep) 67%, var(--blue));
+  --color-energy-8: color-mix(in oklab, var(--pink-deep) 78%, var(--blue));
+  --color-energy-9: color-mix(in oklab, var(--pink-deep) 89%, var(--blue));
+  --color-energy-10: var(--pink-deep);
+  --color-energy-off: var(--blue-10);
+
+  /* Idea kinds. The kind shows as an icon and a word; the colour is the pink ink for all. */
+  --color-idea-energy-up: var(--pink-deep);
+  --color-idea-energy-down: var(--pink-deep);
+  --color-idea-groove: var(--pink-deep);
+  --color-idea-colour: var(--pink-deep);
+  --color-idea-space: var(--pink-deep);
+  --color-idea-drop: var(--pink-deep);
+  --color-idea-phase: var(--pink-deep);
+  --color-idea-restore: var(--pink-deep);
+  --color-idea-fix: var(--pink-deep);
+
+  --color-focus: var(--blue);
+  --color-selection: var(--pink-20);
+  --color-scrim: rgb(36 51 184 / 0.25);
+
+  /* Print effects: a faint paper grain, and overprint where two inks cross. */
+  --texture-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --blend-overprint: multiply;
+  /* A halftone screen of the pink ink (dots), for the quiet "sun" behind the phase name. */
+  --texture-halftone: radial-gradient(circle, var(--pink) 1.3px, transparent 1.7px) 0 0 / 7px 7px;
+
+  /* Depth: flat print. Only floating things get a soft shadow. */
+  --shadow-1: none;
+  --shadow-pop: 0 12px 32px rgb(36 51 184 / 0.16);
+}

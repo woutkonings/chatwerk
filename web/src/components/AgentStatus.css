@@ -1,0 +1,18 @@
+.agent-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 22px;
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+.agent-status[data-status='waiting'],
+.agent-status[data-status='thinking'] {
+  color: var(--color-band);
+}
+
+.agent-status .ui-spinner {
+  color: var(--color-band);
+}

@@ -1,0 +1,56 @@
+/* A message on a light pink screen, with a pink ink icon. */
+
+.ui-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-3);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+}
+
+.ui-notice[data-tone='warn'],
+.ui-notice[data-tone='danger'],
+.ui-notice[data-tone='band'] {
+  background: var(--color-accent-wash);
+}
+
+.ui-notice[data-tone='danger'] {
+  box-shadow: inset 0 0 0 1.5px var(--color-danger);
+}
+
+.ui-notice__icon {
+  display: inline-flex;
+  padding-top: 9px;
+  color: var(--color-text);
+}
+
+.ui-notice[data-tone='warn'] .ui-notice__icon,
+.ui-notice[data-tone='danger'] .ui-notice__icon,
+.ui-notice[data-tone='band'] .ui-notice__icon {
+  color: var(--color-accent);
+}
+
+.ui-notice__body {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 0;
+}
+
+.ui-notice__title {
+  display: block;
+  font-weight: var(--weight-bold);
+  margin-bottom: 2px;
+}
+
+.ui-notice__text {
+  overflow-wrap: anywhere;
+}
+
+.ui-notice__close {
+  flex: none;
+}

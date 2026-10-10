@@ -1,0 +1,148 @@
+/* Buttons are printed pills: a blue fill for the main action, a blue outline for the others. */
+
+.ui-button {
+  --button-bg: transparent;
+  --button-fg: var(--color-text);
+  --button-border: var(--color-border-control);
+  --button-bg-hover: var(--color-surface-3);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--size-control-md);
+  padding: 0 var(--space-5);
+  border: var(--border-width-strong) solid var(--button-border);
+  border-radius: var(--radius-pill);
+  background: var(--button-bg);
+  color: var(--button-fg);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-instant) var(--ease-out);
+}
+
+.ui-button:hover:not(:disabled) {
+  background: var(--button-bg-hover);
+  color: var(--button-fg);
+}
+
+.ui-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.ui-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ui-button[aria-busy='true'] {
+  cursor: progress;
+}
+
+.ui-button__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ui-button svg {
+  flex: none;
+}
+
+.ui-button--block {
+  display: flex;
+  width: 100%;
+}
+
+/* Variants */
+
+.ui-button[data-variant='primary'] {
+  --button-bg: var(--color-action);
+  --button-fg: var(--color-action-ink);
+  --button-border: var(--color-action);
+  --button-bg-hover: var(--color-action-hover);
+}
+
+.ui-button[data-variant='primary']:hover:not(:disabled) {
+  border-color: var(--color-action-hover);
+}
+
+.ui-button[data-variant='ghost'] {
+  --button-border: transparent;
+  --button-bg-hover: transparent;
+  padding: 0 var(--space-2);
+}
+
+.ui-button[data-variant='ghost']:hover:not(:disabled) .ui-button__label {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
+}
+
+.ui-button[data-variant='danger'] {
+  --button-fg: var(--color-danger);
+  --button-border: var(--color-danger);
+  --button-bg-hover: var(--color-danger-soft);
+}
+
+/* Sizes */
+
+.ui-button[data-size='sm'] {
+  height: var(--size-control-sm);
+  padding: 0 var(--space-4);
+  font-size: var(--text-sm);
+  gap: var(--space-1-5);
+}
+
+.ui-button[data-size='lg'] {
+  height: var(--size-control-lg);
+  padding: 0 var(--space-6);
+  font-size: var(--text-lg);
+  gap: var(--space-3);
+}
+
+.ui-button[data-variant='ghost'][data-size] {
+  padding: 0 var(--space-2);
+}
+
+/* Icon only: a circle */
+
+.ui-button--icon {
+  padding: 0;
+  width: var(--size-control-md);
+}
+
+.ui-button--icon[data-size='sm'] {
+  width: var(--size-control-sm);
+  padding: 0;
+}
+
+.ui-button--icon[data-variant='ghost'] {
+  padding: 0;
+}
+
+.ui-button--icon[data-variant='ghost']:hover:not(:disabled) {
+  background: var(--color-surface-3);
+}
+
+@media (pointer: coarse) {
+  .ui-button[data-size='sm'] {
+    height: var(--size-touch);
+  }
+
+  .ui-button--icon,
+  .ui-button--icon[data-size='sm'] {
+    width: var(--size-touch);
+    height: var(--size-touch);
+  }
+}

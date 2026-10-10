@@ -1,0 +1,92 @@
+.ui-input {
+  width: 100%;
+  min-width: 0;
+  height: var(--size-control-md);
+  padding: 0 var(--space-4);
+  border: var(--border-width-strong) solid var(--color-border-control);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.ui-input::placeholder {
+  color: var(--color-text-muted);
+  font-weight: var(--weight-regular);
+  opacity: 1;
+}
+
+.ui-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1.5px var(--color-focus);
+}
+
+.ui-input:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ui-input[aria-invalid='true'] {
+  border-color: var(--color-danger);
+}
+
+.ui-input[readonly] {
+  background: var(--color-bg-sunken);
+}
+
+.ui-input--mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.ui-input[data-size='sm'] {
+  height: var(--size-control-sm);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+}
+
+.ui-input[data-size='lg'] {
+  height: var(--size-control-lg);
+  padding: 0 var(--space-5);
+  font-size: var(--text-lg);
+}
+
+/* With a leading adornment */
+
+.ui-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.ui-field__leading {
+  position: absolute;
+  left: var(--space-4);
+  display: inline-flex;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.ui-field .ui-input {
+  padding-left: calc(var(--space-4) + 16px + var(--space-2));
+}
+
+.ui-field[data-size='lg'] .ui-field__leading {
+  left: var(--space-5);
+}
+
+.ui-field[data-size='lg'] .ui-input {
+  padding-left: calc(var(--space-5) + 16px + var(--space-3));
+}
+
+/* iOS zooms into fields with text under 16px. */
+@media (pointer: coarse) {
+  .ui-input,
+  .ui-input[data-size='sm'] {
+    font-size: 16px;
+  }
+}

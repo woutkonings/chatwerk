@@ -1,0 +1,44 @@
+/* A round key with a letter. On: printed solid (mute in blue, solo in pink ink). */
+
+.ui-key {
+  --key-color: var(--color-text);
+
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: var(--border-width-strong) solid var(--key-color);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--key-color);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  transition: background-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+
+.ui-key:hover {
+  background: var(--color-surface-3);
+}
+
+.ui-key:active {
+  transform: translateY(1px);
+}
+
+.ui-key[aria-pressed='true'] {
+  background: var(--key-color);
+  color: var(--color-text-inverse);
+}
+
+.ui-key[data-tone='mute'] { --key-color: var(--color-mute); }
+.ui-key[data-tone='solo'],
+.ui-key[data-tone='accent'],
+.ui-key[data-tone='band'] { --key-color: var(--color-accent); }
+
+@media (pointer: coarse) {
+  .ui-key {
+    width: var(--size-touch);
+    height: var(--size-touch);
+  }
+}

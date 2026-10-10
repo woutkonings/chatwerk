@@ -1,0 +1,41 @@
+/* A status dot. Blue for "on", pink ink for "now" and for problems, an open ring for "off". */
+
+.ui-led {
+  --led: var(--color-text);
+
+  display: inline-block;
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--led);
+}
+
+.ui-led[data-size='sm'] {
+  width: 7px;
+  height: 7px;
+}
+
+.ui-led[data-tone='band'],
+.ui-led[data-tone='warn'],
+.ui-led[data-tone='danger'] { --led: var(--color-accent); }
+
+.ui-led[data-tone='off'] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--color-text-muted);
+}
+
+.ui-led.is-pulsing {
+  animation: ui-led-pulse 1.2s var(--ease-in-out) infinite alternate;
+}
+
+@keyframes ui-led-pulse {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-led.is-pulsing {
+    animation: none;
+  }
+}

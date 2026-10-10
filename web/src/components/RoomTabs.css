@@ -1,0 +1,75 @@
+.room-tabs {
+  position: sticky;
+  top: var(--topbar-height);
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--gutter);
+  border-bottom: var(--border-width) solid var(--color-border);
+  background-color: var(--color-bg);
+  background-image: var(--texture-grain);
+}
+
+.room-tabs__play.is-playing {
+  --button-bg: transparent;
+  --button-fg: var(--color-text);
+  --button-border: var(--color-text);
+}
+
+.room-tabs__tabs {
+  display: flex;
+  flex: 1;
+  padding: 3px;
+  gap: 2px;
+  border: var(--border-width-strong) solid var(--color-border-control);
+  border-radius: var(--radius-pill);
+}
+
+.room-tabs__tab {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1-5);
+  height: calc(var(--size-touch) - 9px);
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+}
+
+.room-tabs__tab[aria-selected='true'] {
+  background: var(--color-action);
+  color: var(--color-action-ink);
+}
+
+.room-tabs__tab:focus-visible {
+  outline-offset: 2px;
+}
+
+.room-tabs__phase {
+  font-weight: var(--weight-medium);
+  opacity: 0.85;
+}
+
+.room-tabs__unread {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  font-size: var(--text-xs);
+  line-height: 20px;
+  text-align: center;
+}
+
+@media (min-width: 960px) {
+  .room-tabs {
+    display: none;
+  }
+}

@@ -1,0 +1,45 @@
+/* A row of printed squares. Lit squares take the energy ink (blue to pink); the target is a pink tick. */
+
+.ui-meter {
+  --meter-height: 14px;
+  --segment-color: var(--color-text);
+
+  position: relative;
+  min-width: 80px;
+  padding: 6px 0 4px;
+}
+
+.ui-meter[data-size='sm'] { --meter-height: 8px; }
+.ui-meter[data-size='lg'] { --meter-height: 20px; }
+
+.ui-meter[data-tone='band'],
+.ui-meter[data-tone='accent'] { --segment-color: var(--color-accent); }
+
+.ui-meter__segments {
+  display: flex;
+  gap: 3px;
+  height: var(--meter-height);
+}
+
+.ui-meter__segment {
+  flex: 1;
+  border-radius: 2px;
+  background: var(--color-energy-off);
+  transition: background-color var(--duration-base) var(--ease-out);
+}
+
+.ui-meter__segment.is-lit {
+  background: var(--segment-color);
+}
+
+.ui-meter__target {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-bg);
+  transition: left var(--duration-slow) var(--ease-out);
+}

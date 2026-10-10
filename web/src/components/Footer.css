@@ -1,0 +1,26 @@
+.footer {
+  padding: var(--space-5) var(--gutter);
+  border-top: var(--border-width) solid var(--color-border);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.footer__credits summary {
+  cursor: pointer;
+  width: fit-content;
+  font-weight: var(--weight-medium);
+}
+
+.footer__credits summary:hover {
+  color: var(--color-text);
+}
+
+.footer__credits ul {
+  margin: var(--space-3) 0 0;
+  padding-left: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  line-height: var(--leading-normal);
+  max-width: 90ch;
+}

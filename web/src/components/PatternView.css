@@ -1,0 +1,22 @@
+.pattern {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  aspect-ratio: 320 / 36;
+  overflow: visible;
+}
+
+.pattern__beat {
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.pattern__step {
+  fill: var(--color-text-faint);
+}
+
+.pattern__hit,
+.pattern__note {
+  fill: var(--color-text);
+}

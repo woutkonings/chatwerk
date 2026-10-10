@@ -1,0 +1,41 @@
+/* A label above a value. The value carries the weight; the label is small and muted. */
+
+.ui-readout {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ui-readout__label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  line-height: var(--leading-snug);
+}
+
+.ui-readout__value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+}
+
+.ui-readout__unit {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+}
+
+.ui-readout[data-size='sm'] .ui-readout__value { font-size: var(--text-md); }
+.ui-readout[data-size='lg'] .ui-readout__value { font-size: var(--text-2xl); }
+
+.ui-readout[data-tone='accent'] .ui-readout__value,
+.ui-readout[data-tone='band'] .ui-readout__value { color: var(--color-accent); }
+.ui-readout[data-tone='muted'] .ui-readout__value { color: var(--color-text-muted); font-weight: var(--weight-semibold); }

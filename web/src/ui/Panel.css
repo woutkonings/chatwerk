@@ -1,0 +1,69 @@
+/* A section of the page: a strong rule on top and a title. No box, no fill. */
+
+.ui-panel {
+  --panel-pad: 0;
+
+  position: relative;
+  min-width: 0;
+  padding: var(--panel-pad);
+  border-top: var(--rule-width) solid var(--color-border-strong);
+}
+
+/* Sunken: a well for a display (no rule, a darker paper). */
+.ui-panel[data-tone='sunken'] {
+  --panel-pad: var(--space-5);
+
+  border-top: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-sunken);
+}
+
+/* Band: the rule is printed in pink. */
+.ui-panel[data-tone='band'] {
+  border-top-color: var(--color-band);
+}
+
+.ui-panel[data-padding='sm'][data-tone='sunken'] { --panel-pad: var(--space-3); }
+
+.ui-panel__header {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  padding-top: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.ui-panel[data-tone='sunken'] > .ui-panel__header {
+  padding-top: 0;
+}
+
+.ui-panel__title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+}
+
+.ui-panel__title svg {
+  align-self: center;
+}
+
+.ui-panel__meta {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  min-width: 0;
+}
+
+.ui-panel__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: auto;
+}

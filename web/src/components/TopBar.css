@@ -1,0 +1,137 @@
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  height: var(--topbar-height);
+  padding: 0 var(--gutter);
+  border-bottom: var(--border-width) solid var(--color-border);
+  background-color: var(--color-bg);
+  background-image: var(--texture-grain);
+}
+
+.topbar__room {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.topbar__slash {
+  display: none;
+}
+
+.topbar__room-id {
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.topbar__end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  margin-left: auto;
+  min-width: 0;
+}
+
+/* Invite */
+
+.invite {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.invite__field {
+  width: 280px;
+}
+
+/* Connection: a dot and a word. */
+
+.connection {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.connection[data-status='closed'] {
+  color: var(--color-danger);
+}
+
+/* Presence */
+
+.presence {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.presence__count {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  font-family: var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.presence__list {
+  display: flex;
+  gap: var(--space-3);
+  min-width: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 959px) {
+  .topbar {
+    gap: var(--space-3);
+  }
+
+  .topbar .logo__word {
+    display: none;
+  }
+
+  .topbar__end {
+    gap: var(--space-3);
+  }
+
+  .presence__list {
+    display: none;
+  }
+
+  /* "Live" is the normal state: only the dot shows, and screen readers still read the word.
+     Any other state ("Connecting", "Offline") keeps its word on screen. */
+  .connection[data-status='open'] .connection__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .invite__field {
+    position: absolute;
+    top: calc(var(--topbar-height) + var(--space-1));
+    left: var(--gutter);
+    right: var(--gutter);
+    width: auto;
+    z-index: var(--z-overlay);
+    box-shadow: var(--shadow-pop);
+  }
+}

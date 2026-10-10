@@ -1,0 +1,5 @@
+.layer-grid__list {
+  display: flex;
+  flex-direction: column;
+  margin-top: calc(var(--space-2) * -1);
+}
