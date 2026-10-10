@@ -1,10 +1,12 @@
-// One agent turn: ask the model, apply its operations, check the new song, and
-// retry one time with the problems. If the retry also has problems, apply only
-// the operations that pass. The song changes only when every check passes.
+// One agent turn: ask the model, apply the harness rules (tempo, timing),
+// apply its operations, check the new song, and retry one time with the
+// problems. If the retry also has problems, apply only the operations that
+// pass. The song changes only when every check passes.
 import type Anthropic from '@anthropic-ai/sdk';
 import type { AgentTurn, Song } from '../shared/schema.ts';
 import { applyOps, type OpError } from '../shared/song.ts';
 import { checkSongInWorker } from './check-song.ts';
+import { enforce, tempoNote, tempoPolicy } from './harness.ts';
 import { proposeTurn, type SetupName, type Usage } from './llm.ts';
 import { buildSystemPrompt, buildTurnMessage, type PromptVariant, type TurnContext } from './prompt.ts';
 
@@ -19,6 +21,7 @@ export type AgentOutcome = {
   reply: string;
   problems: string[]; // problems that remain after the last attempt
   attempts: Attempt[];
+  harness: string[]; // changes that the harness made to the agent's operations
 };
 
 type Evaluation = { song: Song; problems: string[]; badOps: Set<number> };
@@ -51,8 +54,10 @@ export async function runAgentTurn(
 ): Promise<AgentOutcome> {
   const system = buildSystemPrompt(prompt);
   const author = [...new Set(context.newMessages.map((m) => m.author))].join(', ');
-  const user = buildTurnMessage(context);
+  const policy = tempoPolicy(context.song, context.newMessages);
+  const user = buildTurnMessage({ ...context, notes: [tempoNote(policy, context.song)] });
   const attempts: Attempt[] = [];
+  const harness: string[] = [];
   let retry: { assistant: Anthropic.ContentBlock[]; problems: string } | undefined;
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
@@ -61,14 +66,15 @@ export async function runAgentTurn(
       attempts.push({ latencyMs: result.latencyMs, costUsd: result.costUsd, usage: result.usage, problems: [result.reason] });
       // A refusal usually follows a request that is not about music (see the bake-off).
       const reply = result.refused ? 'The band only makes music, so the song stays as it is.' : 'The band could not answer that. Please try again.';
-      return { song: context.song, changed: false, turn: null, reply, problems: [result.reason], attempts };
+      return { song: context.song, changed: false, turn: null, reply, problems: [result.reason], attempts, harness };
     }
 
     const turn = result.turn;
+    harness.push(...enforce(turn, policy, context.song));
     const evaluation = await evaluate(turn, context, author, restore);
     attempts.push({ latencyMs: result.latencyMs, costUsd: result.costUsd, usage: result.usage, problems: evaluation.problems });
     if (evaluation.problems.length === 0) {
-      return { song: evaluation.song, changed: evaluation.song !== context.song, turn, reply: turn.reply, problems: [], attempts };
+      return { song: evaluation.song, changed: evaluation.song !== context.song, turn, reply: turn.reply, problems: [], attempts, harness };
     }
     if (attempt < MAX_ATTEMPTS) {
       retry = { assistant: result.assistant, problems: evaluation.problems.map((p) => `- ${p}`).join('\n') };
@@ -80,7 +86,7 @@ export async function runAgentTurn(
     const partial = await evaluate({ ...turn, ops: goodOps }, context, author, restore);
     const song = partial.problems.length === 0 ? partial.song : context.song;
     const note = song === context.song ? ' (The change did not pass the checks, so the song stays as it was.)' : ' (Part of the change did not pass the checks.)';
-    return { song, changed: song !== context.song, turn, reply: turn.reply + note, problems: evaluation.problems, attempts };
+    return { song, changed: song !== context.song, turn, reply: turn.reply + note, problems: evaluation.problems, attempts, harness };
   }
   throw new Error('unreachable');
 }

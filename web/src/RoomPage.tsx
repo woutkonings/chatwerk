@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { MAX_CHAT_LENGTH, MAX_NAME_LENGTH, REACTIONS, REACTION_EMOJI, type ChatEntry } from '../../shared/protocol.ts';
 import type { Layer } from '../../shared/schema.ts';
+import type { LayerChange } from '../../shared/transition.ts';
 import { strudelUrl, toStrudelCode } from '../../shared/song.ts';
 import { Connection, INITIAL_STATE, type RoomState } from './connection.ts';
 import { Footer } from './Footer.tsx';
@@ -49,13 +50,14 @@ function Room({ roomId, name }: { roomId: string; name: string }) {
   const [mutes, setMutes] = useState<Set<string>>(new Set());
   const [solo, setSolo] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
+  const [cycle, setCycle] = useState(0); // the room cycle, for the transition labels
   const connection = useRef<Connection | null>(null);
   const player = useRef<Player | null>(null);
 
   useEffect(() => {
     const conn = new Connection(roomId, name, getClientId(), {
       onState: setState,
-      onSong: (song, clock, applyAt) => player.current?.setSong(song, clock, applyAt),
+      onSong: (song, clocks, applyAt, changes) => player.current?.setSong(song, clocks, applyAt, changes),
     });
     player.current = new Player(conn.clock, setErrors);
     // For tests from the browser console: how far this listener is from the room clock.
@@ -72,6 +74,11 @@ function Room({ roomId, name }: { roomId: string; name: string }) {
     player.current?.setLocal(mutes, solo);
   }, [mutes, solo]);
 
+  useEffect(() => {
+    const timer = setInterval(() => setCycle(player.current?.roomNow() ?? 0), 500);
+    return () => clearInterval(timer);
+  }, []);
+
   const togglePlay = async () => {
     const current = player.current;
     if (!current) return;
@@ -83,7 +90,7 @@ function Room({ roomId, name }: { roomId: string; name: string }) {
     setStarting(true);
     try {
       await current.start();
-      if (state.clock) current.setSong(state.song, state.clock, null);
+      current.setSong(state.song, state.clocks, null);
       setPlaying(true);
     } finally {
       setStarting(false);
@@ -153,6 +160,7 @@ function Room({ roomId, name }: { roomId: string; name: string }) {
             <div className="layers">
               {song.layers.map((layer) => (
                 <LayerCard key={layer.id} layer={layer} error={errors[layer.id]} muted={mutes.has(layer.id)}
+                  label={changeLabel(state.changes[layer.id], cycle)}
                   soloed={solo === layer.id} onMute={() => toggleMute(layer.id)}
                   onSolo={() => setSolo(solo === layer.id ? null : layer.id)} />
               ))}
@@ -210,9 +218,25 @@ function AgentLine({ state }: { state: RoomState }) {
   return <p className={`agent ${status}`}><span className="dot" />{text}{queue > 0 && status === 'thinking' ? ` (${queue} more waiting)` : ''}</p>;
 }
 
-type CardProps = { layer: Layer; error?: string; muted: boolean; soloed: boolean; onMute: () => void; onSolo: () => void };
+// "fade in 3 bars" before a staged change, "fading" during it, nothing after it.
+function changeLabel(change: LayerChange | undefined, cycle: number): string | null {
+  if (!change) return null;
+  const name = { cut: 'cut', fade: 'fade', filter: 'filter sweep' }[change.style];
+  if (cycle < change.at) {
+    const bars = Math.ceil(change.at - cycle);
+    return `${name} in ${bars} bar${bars === 1 ? '' : 's'}`;
+  }
+  if (change.bars > 0 && cycle < change.at + change.bars) {
+    return `${change.style === 'filter' ? 'filtering' : 'fading'}, ${Math.ceil(change.at + change.bars - cycle)} bars left`;
+  }
+  return null;
+}
 
-function LayerCard({ layer, error, muted, soloed, onMute, onSolo }: CardProps) {
+type CardProps = {
+  layer: Layer; error?: string; label: string | null; muted: boolean; soloed: boolean; onMute: () => void; onSolo: () => void;
+};
+
+function LayerCard({ layer, error, label, muted, soloed, onMute, onSolo }: CardProps) {
   return (
     <article className={`layer role-${layer.role} ${muted || layer.muted ? 'is-muted' : ''} ${soloed ? 'is-solo' : ''}`}>
       <header>
@@ -225,6 +249,7 @@ function LayerCard({ layer, error, muted, soloed, onMute, onSolo }: CardProps) {
         </span>
       </header>
       {layer.muted && <p className="layer-note">Muted by the band</p>}
+      {label && <p className="layer-change">{label}</p>}
       <pre className="layer-code">{layer.code}</pre>
       {error && <p className="layer-error">This layer does not play here: {error}</p>}
     </article>

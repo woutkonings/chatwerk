@@ -1,0 +1,1644 @@
+{
+  "haiku/v3": {
+    "run": {
+      "label": "haiku/v3",
+      "setup": "haiku",
+      "prompt": "v3"
+    },
+    "logs": [
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "Start a dark underground techno groove at 132 bpm"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 1,
+            "bpm": 132,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "drums",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "bass",
+                "role": "bass",
+                "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              }
+            ]
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Start a dark underground techno groove at 132 bpm with a sidechained kick, a rolling bass and off-beat hats, in A minor.",
+            "ops": [
+              {
+                "op": "set_tempo",
+                "bpm": 132
+              },
+              {
+                "op": "set_key",
+                "root": "A",
+                "scale": "minor"
+              },
+              {
+                "op": "set_layer",
+                "id": "drums",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "cut",
+                  "bars": 1
+                }
+              },
+              {
+                "op": "set_layer",
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 4
+                }
+              },
+              {
+                "op": "set_layer",
+                "id": "bass",
+                "role": "bass",
+                "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 8
+                }
+              }
+            ],
+            "when": "now",
+            "reply": "Wout, here is a dark techno groove at 132 bpm in A minor: kick, hats and a rolling bass, with more layers to follow.",
+            "summary": "Dark techno groove at 132 bpm"
+          },
+          "reply": "Wout, here is a dark techno groove at 132 bpm in A minor: kick, hats and a rolling bass, with more layers to follow.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 6134,
+              "costUsd": 0.0011683,
+              "usage": {
+                "input": 133,
+                "cacheWrite": 6932,
+                "cacheRead": 0,
+                "output": 577
+              },
+              "problems": []
+            }
+          ],
+          "harness": []
+        },
+        "song": {
+          "version": 1,
+          "bpm": 132,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "drums",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "bass",
+              "role": "bass",
+              "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            }
+          ]
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "make it breakbeat"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 2,
+            "bpm": 132,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "drums",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+                "muted": false,
+                "author": "Wout",
+                "since": 2
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "bass",
+                "role": "bass",
+                "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "breaks",
+                "role": "fx",
+                "code": "s(\"amencutup*8\").n(\"<[0 1 2 3 4 5 6 7] [0 1 6 7 2 3 12 13]>\").gain(.4).hpf(300).degradeBy(.1)",
+                "muted": false,
+                "author": "Wout",
+                "since": 2
+              }
+            ]
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Swap the four-on-the-floor kick for a broken Amen break, keep the rolling bass and hats, and cut the new drums in on the next phrase.",
+            "ops": [
+              {
+                "op": "set_layer",
+                "id": "drums",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "cut",
+                  "bars": 1
+                }
+              },
+              {
+                "op": "set_layer",
+                "id": "breaks",
+                "role": "fx",
+                "code": "s(\"amencutup*8\").n(\"<[0 1 2 3 4 5 6 7] [0 1 6 7 2 3 12 13]>\").gain(.4).hpf(300).degradeBy(.1)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "cut",
+                  "bars": 1
+                }
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Wout, here is the breakbeat: the kick now plays a syncopated pattern and a chopped Amen break runs under the hats and bass, cutting in on the next phrase.",
+            "summary": "Breakbeat version with chopped Amen"
+          },
+          "reply": "Wout, here is the breakbeat: the kick now plays a syncopated pattern and a chopped Amen break runs under the hats and bass, cutting in on the next phrase.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 3016,
+              "costUsd": 0.00033822,
+              "usage": {
+                "input": 574,
+                "cacheWrite": 0,
+                "cacheRead": 6932,
+                "output": 423
+              },
+              "problems": []
+            }
+          ],
+          "harness": []
+        },
+        "song": {
+          "version": 2,
+          "bpm": 132,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "drums",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+              "muted": false,
+              "author": "Wout",
+              "since": 2
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "bass",
+              "role": "bass",
+              "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "breaks",
+              "role": "fx",
+              "code": "s(\"amencutup*8\").n(\"<[0 1 2 3 4 5 6 7] [0 1 6 7 2 3 12 13]>\").gain(.4).hpf(300).degradeBy(.1)",
+              "muted": false,
+              "author": "Wout",
+              "since": 2
+            }
+          ]
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "more like electro breakbeat"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 3,
+            "bpm": 132,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "drums",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+                "muted": false,
+                "author": "Wout",
+                "since": 2
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "bass",
+                "role": "bass",
+                "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "breaks",
+                "role": "fx",
+                "code": "s(\"amencutup*8\").n(\"<[0 1 2 3 4 5 6 7] [0 1 6 7 2 3 12 13]>\").gain(.4).hpf(300).degradeBy(.1)",
+                "muted": false,
+                "author": "Wout",
+                "since": 2
+              },
+              {
+                "id": "clap",
+                "role": "perc",
+                "code": "s(\"~ cp ~ cp\").bank(\"RolandTR909\").gain(.45).room(.35).roomsize(3).hpf(300)",
+                "muted": false,
+                "author": "Wout",
+                "since": 3
+              },
+              {
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am7 Dm7>\").struct(\"[~ x ~ ~] [~ ~ x ~]\").voicing().s(\"square\").lpf(sine.range(800, 2200).slow(32)).decay(.12).sustain(0).gain(.28).delay(.4).delaytime(3/16).delayfeedback(.5).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 3
+              }
+            ]
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Shift toward electro breakbeat: add a clap on 2 and 4 with a filter-in, and a brighter acid-like stab layer on the offbeat, keeping key and tempo.",
+            "ops": [
+              {
+                "op": "set_layer",
+                "id": "clap",
+                "role": "perc",
+                "code": "s(\"~ cp ~ cp\").bank(\"RolandTR909\").gain(.45).room(.35).roomsize(3).hpf(300)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 4
+                }
+              },
+              {
+                "op": "set_layer",
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am7 Dm7>\").struct(\"[~ x ~ ~] [~ ~ x ~]\").voicing().s(\"square\").lpf(sine.range(800, 2200).slow(32)).decay(.12).sustain(0).gain(.28).delay(.4).delaytime(3/16).delayfeedback(.5).orbit(3)",
+                "muted": false,
+                "timing": {
+                  "start": 8,
+                  "style": "filter",
+                  "bars": 8
+                }
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Wout, I'm adding a clap on 2 and 4 and an offbeat square stab for the electro breakbeat feel, both coming in on the next phrase.",
+            "summary": "Electro breakbeat: clap and stabs"
+          },
+          "reply": "Wout, I'm adding a clap on 2 and 4 and an offbeat square stab for the electro breakbeat feel, both coming in on the next phrase.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2841,
+              "costUsd": 0.00037342,
+              "usage": {
+                "input": 806,
+                "cacheWrite": 0,
+                "cacheRead": 6932,
+                "output": 447
+              },
+              "problems": []
+            }
+          ],
+          "harness": []
+        },
+        "song": {
+          "version": 3,
+          "bpm": 132,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "drums",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+              "muted": false,
+              "author": "Wout",
+              "since": 2
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "bass",
+              "role": "bass",
+              "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "breaks",
+              "role": "fx",
+              "code": "s(\"amencutup*8\").n(\"<[0 1 2 3 4 5 6 7] [0 1 6 7 2 3 12 13]>\").gain(.4).hpf(300).degradeBy(.1)",
+              "muted": false,
+              "author": "Wout",
+              "since": 2
+            },
+            {
+              "id": "clap",
+              "role": "perc",
+              "code": "s(\"~ cp ~ cp\").bank(\"RolandTR909\").gain(.45).room(.35).roomsize(3).hpf(300)",
+              "muted": false,
+              "author": "Wout",
+              "since": 3
+            },
+            {
+              "id": "stab",
+              "role": "chords",
+              "code": "chord(\"<Am7 Dm7>\").struct(\"[~ x ~ ~] [~ ~ x ~]\").voicing().s(\"square\").lpf(sine.range(800, 2200).slow(32)).decay(.12).sustain(0).gain(.28).delay(.4).delaytime(3/16).delayfeedback(.5).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 3
+            }
+          ]
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "now back to techy stabby synth, keep the acid"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 4,
+            "bpm": 132,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "drums",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+                "muted": false,
+                "author": "Wout",
+                "since": 2
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "bass",
+                "role": "bass",
+                "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 4
+              },
+              {
+                "id": "acid",
+                "role": "arp",
+                "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+                "muted": false,
+                "author": "Wout",
+                "since": 4
+              }
+            ]
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Wout wants a techy stabby synth back and the acid kept. I will fade out the breakbeat chops and clap, and bring in a dark techno stab layer plus an acid line, both on the next phrase.",
+            "ops": [
+              {
+                "op": "remove_layer",
+                "id": "breaks",
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 8
+                }
+              },
+              {
+                "op": "remove_layer",
+                "id": "clap",
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 4
+                }
+              },
+              {
+                "op": "set_layer",
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "fade",
+                  "bars": 4
+                }
+              },
+              {
+                "op": "set_layer",
+                "id": "acid",
+                "role": "arp",
+                "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 8
+                }
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Wout, the breakbeat chops and clap fade out, and a techy stabby synth comes back over the acid line, both landing on the next phrase.",
+            "summary": "Techy stabs back, acid kept"
+          },
+          "reply": "Wout, the breakbeat chops and clap fade out, and a techy stabby synth comes back over the acid line, both landing on the next phrase.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 3519,
+              "costUsd": 0.00050062,
+              "usage": {
+                "input": 1153,
+                "cacheWrite": 0,
+                "cacheRead": 6932,
+                "output": 632
+              },
+              "problems": []
+            }
+          ],
+          "harness": []
+        },
+        "song": {
+          "version": 4,
+          "bpm": 132,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "drums",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+              "muted": false,
+              "author": "Wout",
+              "since": 2
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "bass",
+              "role": "bass",
+              "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "stab",
+              "role": "chords",
+              "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 4
+            },
+            {
+              "id": "acid",
+              "role": "arp",
+              "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+              "muted": false,
+              "author": "Wout",
+              "since": 4
+            }
+          ]
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "make simpler"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 5,
+            "bpm": 132,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "drums",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+                "muted": false,
+                "author": "Wout",
+                "since": 2
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "bass",
+                "role": "bass",
+                "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+                "muted": true,
+                "author": "Wout",
+                "since": 5
+              },
+              {
+                "id": "acid",
+                "role": "arp",
+                "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+                "muted": true,
+                "author": "Wout",
+                "since": 5
+              }
+            ]
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Simplify the song by muting the stab and acid layers and letting the kick, hats and bass carry the groove, fading the stab out over the next phrase.",
+            "ops": [
+              {
+                "op": "set_layer",
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+                "muted": true,
+                "timing": {
+                  "start": 0,
+                  "style": "fade",
+                  "bars": 4
+                }
+              },
+              {
+                "op": "set_layer",
+                "id": "acid",
+                "role": "arp",
+                "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+                "muted": true,
+                "timing": {
+                  "start": 0,
+                  "style": "fade",
+                  "bars": 4
+                }
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Wout, I'm muting the stabs and acid so the song drops back to just kick, hats and rolling bass, landing on the next phrase.",
+            "summary": "Simplified to kick, hats and bass"
+          },
+          "reply": "Wout, I'm muting the stabs and acid so the song drops back to just kick, hats and rolling bass, landing on the next phrase.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2962,
+              "costUsd": 0.00045942,
+              "usage": {
+                "input": 1231,
+                "cacheWrite": 0,
+                "cacheRead": 6932,
+                "output": 534
+              },
+              "problems": []
+            }
+          ],
+          "harness": []
+        },
+        "song": {
+          "version": 5,
+          "bpm": 132,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "drums",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+              "muted": false,
+              "author": "Wout",
+              "since": 2
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "bass",
+              "role": "bass",
+              "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "stab",
+              "role": "chords",
+              "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+              "muted": true,
+              "author": "Wout",
+              "since": 5
+            },
+            {
+              "id": "acid",
+              "role": "arp",
+              "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+              "muted": true,
+              "author": "Wout",
+              "since": 5
+            }
+          ]
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "now groovy jazzy techno"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 6,
+            "bpm": 132,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "drums",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+                "muted": false,
+                "author": "Wout",
+                "since": 2
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "bass",
+                "role": "bass",
+                "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+                "muted": true,
+                "author": "Wout",
+                "since": 5
+              },
+              {
+                "id": "acid",
+                "role": "arp",
+                "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+                "muted": true,
+                "author": "Wout",
+                "since": 5
+              },
+              {
+                "id": "jazzkeys",
+                "role": "chords",
+                "code": "chord(\"<Am9!4 Dm9!2 E7b9>\").voicing().s(\"fmpiano\").struct(\"[~ x ~ x] ~ [~ x ~ ~] ~\").decay(.4).sustain(0).gain(.3).room(.5).roomsize(4).hpf(300).lpf(sine.range(900, 2200).slow(32)).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 6
+              }
+            ]
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Wout wants a groovy jazzy techno feel. I'll bring in a swung electric piano chord layer with a jazzy minor 9 voicing on the next phrase, filtered in, and keep the kick, hats and rolling bass.",
+            "ops": [
+              {
+                "op": "set_layer",
+                "id": "jazzkeys",
+                "role": "chords",
+                "code": "chord(\"<Am9!4 Dm9!2 E7b9>\").voicing().s(\"fmpiano\").struct(\"[~ x ~ x] ~ [~ x ~ ~] ~\").decay(.4).sustain(0).gain(.3).room(.5).roomsize(4).hpf(300).lpf(sine.range(900, 2200).slow(32)).orbit(3)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 8
+                }
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Wout, I'm adding a jazzy electric piano chord layer with a sweeping filter, landing on the next phrase while the kick, hats and bass keep the groove.",
+            "summary": "Jazzy electric piano added"
+          },
+          "reply": "Wout, I'm adding a jazzy electric piano chord layer with a sweeping filter, landing on the next phrase while the kick, hats and bass keep the groove.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 3082,
+              "costUsd": 0.00038542000000000003,
+              "usage": {
+                "input": 1316,
+                "cacheWrite": 0,
+                "cacheRead": 6932,
+                "output": 369
+              },
+              "problems": []
+            }
+          ],
+          "harness": []
+        },
+        "song": {
+          "version": 6,
+          "bpm": 132,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "drums",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+              "muted": false,
+              "author": "Wout",
+              "since": 2
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "bass",
+              "role": "bass",
+              "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "stab",
+              "role": "chords",
+              "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+              "muted": true,
+              "author": "Wout",
+              "since": 5
+            },
+            {
+              "id": "acid",
+              "role": "arp",
+              "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+              "muted": true,
+              "author": "Wout",
+              "since": 5
+            },
+            {
+              "id": "jazzkeys",
+              "role": "chords",
+              "code": "chord(\"<Am9!4 Dm9!2 E7b9>\").voicing().s(\"fmpiano\").struct(\"[~ x ~ x] ~ [~ x ~ ~] ~\").decay(.4).sustain(0).gain(.3).room(.5).roomsize(4).hpf(300).lpf(sine.range(900, 2200).slow(32)).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 6
+            }
+          ]
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "bring in a dreamy pad, slowly"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 7,
+            "bpm": 132,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "drums",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+                "muted": false,
+                "author": "Wout",
+                "since": 2
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "bass",
+                "role": "bass",
+                "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+                "muted": true,
+                "author": "Wout",
+                "since": 5
+              },
+              {
+                "id": "acid",
+                "role": "arp",
+                "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+                "muted": true,
+                "author": "Wout",
+                "since": 5
+              },
+              {
+                "id": "jazzkeys",
+                "role": "chords",
+                "code": "chord(\"<Am9!4 Dm9!2 E7b9>\").voicing().s(\"fmpiano\").struct(\"[~ x ~ x] ~ [~ x ~ ~] ~\").decay(.4).sustain(0).gain(.3).room(.5).roomsize(4).hpf(300).lpf(sine.range(900, 2200).slow(32)).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 6
+              },
+              {
+                "id": "pad",
+                "role": "pad",
+                "code": "chord(\"<Am9!4 Dm9!2 Am9>/4\").voicing().s(\"supersaw\").attack(2).release(3).lpf(sine.range(700, 1400).slow(32)).hpf(250).gain(.2).room(.7).roomsize(6).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 7
+              }
+            ]
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Bring in a slow, dreamy pad on the dub bus, fading in over 8 bars so it swells gently under the jazzy keys and groove.",
+            "ops": [
+              {
+                "op": "set_layer",
+                "id": "pad",
+                "role": "pad",
+                "code": "chord(\"<Am9!4 Dm9!2 Am9>/4\").voicing().s(\"supersaw\").attack(2).release(3).lpf(sine.range(700, 1400).slow(32)).hpf(250).gain(.2).room(.7).roomsize(6).orbit(3)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "fade",
+                  "bars": 8
+                }
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Wout, I'm adding a slow, dreamy pad that fades in over 8 bars on the next phrase, sitting under the keys and groove.",
+            "summary": "Dreamy pad fades in"
+          },
+          "reply": "Wout, I'm adding a slow, dreamy pad that fades in over 8 bars on the next phrase, sitting under the keys and groove.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2466,
+              "costUsd": 0.00036772000000000004,
+              "usage": {
+                "input": 1514,
+                "cacheWrite": 0,
+                "cacheRead": 6932,
+                "output": 294
+              },
+              "problems": []
+            }
+          ],
+          "harness": []
+        },
+        "song": {
+          "version": 7,
+          "bpm": 132,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "drums",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+              "muted": false,
+              "author": "Wout",
+              "since": 2
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "bass",
+              "role": "bass",
+              "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "stab",
+              "role": "chords",
+              "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+              "muted": true,
+              "author": "Wout",
+              "since": 5
+            },
+            {
+              "id": "acid",
+              "role": "arp",
+              "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+              "muted": true,
+              "author": "Wout",
+              "since": 5
+            },
+            {
+              "id": "jazzkeys",
+              "role": "chords",
+              "code": "chord(\"<Am9!4 Dm9!2 E7b9>\").voicing().s(\"fmpiano\").struct(\"[~ x ~ x] ~ [~ x ~ ~] ~\").decay(.4).sustain(0).gain(.3).room(.5).roomsize(4).hpf(300).lpf(sine.range(900, 2200).slow(32)).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 6
+            },
+            {
+              "id": "pad",
+              "role": "pad",
+              "code": "chord(\"<Am9!4 Dm9!2 Am9>/4\").voicing().s(\"supersaw\").attack(2).release(3).lpf(sine.range(700, 1400).slow(32)).hpf(250).gain(.2).room(.7).roomsize(6).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 7
+            }
+          ]
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "drop the bass for a breakdown"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 8,
+            "bpm": 132,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "drums",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+                "muted": false,
+                "author": "Wout",
+                "since": 2
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "bass",
+                "role": "bass",
+                "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+                "muted": true,
+                "author": "Wout",
+                "since": 8
+              },
+              {
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+                "muted": true,
+                "author": "Wout",
+                "since": 5
+              },
+              {
+                "id": "acid",
+                "role": "arp",
+                "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+                "muted": true,
+                "author": "Wout",
+                "since": 5
+              },
+              {
+                "id": "jazzkeys",
+                "role": "chords",
+                "code": "chord(\"<Am9!4 Dm9!2 E7b9>\").voicing().s(\"fmpiano\").struct(\"[~ x ~ x] ~ [~ x ~ ~] ~\").decay(.4).sustain(0).gain(.3).room(.5).roomsize(4).hpf(300).lpf(sine.range(900, 2200).slow(32)).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 6
+              },
+              {
+                "id": "pad",
+                "role": "pad",
+                "code": "chord(\"<Am9!4 Dm9!2 Am9>/4\").voicing().s(\"supersaw\").attack(2).release(3).lpf(sine.range(700, 1400).slow(32)).hpf(250).gain(.2).room(.7).roomsize(6).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 7
+              }
+            ]
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Wout wants a breakdown without bass. I'll mute the bass layer with a filter fade on the next phrase so the kick, hats and keys carry the drop, then bring it back later.",
+            "ops": [
+              {
+                "op": "set_layer",
+                "id": "bass",
+                "role": "bass",
+                "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+                "muted": true,
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 4
+                }
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Wout, I'm dropping the bass for the breakdown with a filter sweep on the next phrase, so the kick, hats, keys and pad carry the groove.",
+            "summary": "Bass dropped for breakdown"
+          },
+          "reply": "Wout, I'm dropping the bass for the breakdown with a filter sweep on the next phrase, so the kick, hats, keys and pad carry the groove.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2813,
+              "costUsd": 0.00039462,
+              "usage": {
+                "input": 1663,
+                "cacheWrite": 0,
+                "cacheRead": 6932,
+                "output": 318
+              },
+              "problems": []
+            }
+          ],
+          "harness": []
+        },
+        "song": {
+          "version": 8,
+          "bpm": 132,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "drums",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+              "muted": false,
+              "author": "Wout",
+              "since": 2
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "bass",
+              "role": "bass",
+              "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+              "muted": true,
+              "author": "Wout",
+              "since": 8
+            },
+            {
+              "id": "stab",
+              "role": "chords",
+              "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+              "muted": true,
+              "author": "Wout",
+              "since": 5
+            },
+            {
+              "id": "acid",
+              "role": "arp",
+              "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+              "muted": true,
+              "author": "Wout",
+              "since": 5
+            },
+            {
+              "id": "jazzkeys",
+              "role": "chords",
+              "code": "chord(\"<Am9!4 Dm9!2 E7b9>\").voicing().s(\"fmpiano\").struct(\"[~ x ~ x] ~ [~ x ~ ~] ~\").decay(.4).sustain(0).gain(.3).room(.5).roomsize(4).hpf(300).lpf(sine.range(900, 2200).slow(32)).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 6
+            },
+            {
+              "id": "pad",
+              "role": "pad",
+              "code": "chord(\"<Am9!4 Dm9!2 Am9>/4\").voicing().s(\"supersaw\").attack(2).release(3).lpf(sine.range(700, 1400).slow(32)).hpf(250).gain(.2).room(.7).roomsize(6).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 7
+            }
+          ]
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "bring the bass back with a big drop"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 9,
+            "bpm": 132,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "drums",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+                "muted": false,
+                "author": "Wout",
+                "since": 2
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "bass",
+                "role": "bass",
+                "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+                "muted": false,
+                "author": "Wout",
+                "since": 9
+              },
+              {
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+                "muted": true,
+                "author": "Wout",
+                "since": 5
+              },
+              {
+                "id": "acid",
+                "role": "arp",
+                "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+                "muted": true,
+                "author": "Wout",
+                "since": 5
+              },
+              {
+                "id": "jazzkeys",
+                "role": "chords",
+                "code": "chord(\"<Am9!4 Dm9!2 E7b9>\").voicing().s(\"fmpiano\").struct(\"[~ x ~ x] ~ [~ x ~ ~] ~\").decay(.4).sustain(0).gain(.3).room(.5).roomsize(4).hpf(300).lpf(sine.range(900, 2200).slow(32)).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 6
+              },
+              {
+                "id": "pad",
+                "role": "pad",
+                "code": "chord(\"<Am9!4 Dm9!2 Am9>/4\").voicing().s(\"supersaw\").attack(2).release(3).lpf(sine.range(700, 1400).slow(32)).hpf(250).gain(.2).room(.7).roomsize(6).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 7
+              }
+            ]
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Bring the rolling bass back for the drop, cutting in on the next phrase while the kick and hats stay in place, with the keys and pad carrying on.",
+            "ops": [
+              {
+                "op": "set_layer",
+                "id": "bass",
+                "role": "bass",
+                "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "cut",
+                  "bars": 1
+                }
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Wout, the bass comes back with a hard cut on the next phrase for the big drop, with kick, hats, keys and pad still running under it.",
+            "summary": "Bass returns for the big drop"
+          },
+          "reply": "Wout, the bass comes back with a hard cut on the next phrase for the big drop, with kick, hats, keys and pad still running under it.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2593,
+              "costUsd": 0.00038782,
+              "usage": {
+                "input": 1685,
+                "cacheWrite": 0,
+                "cacheRead": 6932,
+                "output": 300
+              },
+              "problems": []
+            }
+          ],
+          "harness": []
+        },
+        "song": {
+          "version": 9,
+          "bpm": 132,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "drums",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+              "muted": false,
+              "author": "Wout",
+              "since": 2
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "bass",
+              "role": "bass",
+              "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+              "muted": false,
+              "author": "Wout",
+              "since": 9
+            },
+            {
+              "id": "stab",
+              "role": "chords",
+              "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+              "muted": true,
+              "author": "Wout",
+              "since": 5
+            },
+            {
+              "id": "acid",
+              "role": "arp",
+              "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+              "muted": true,
+              "author": "Wout",
+              "since": 5
+            },
+            {
+              "id": "jazzkeys",
+              "role": "chords",
+              "code": "chord(\"<Am9!4 Dm9!2 E7b9>\").voicing().s(\"fmpiano\").struct(\"[~ x ~ x] ~ [~ x ~ ~] ~\").decay(.4).sustain(0).gain(.3).room(.5).roomsize(4).hpf(300).lpf(sine.range(900, 2200).slow(32)).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 6
+            },
+            {
+              "id": "pad",
+              "role": "pad",
+              "code": "chord(\"<Am9!4 Dm9!2 Am9>/4\").voicing().s(\"supersaw\").attack(2).release(3).lpf(sine.range(700, 1400).slow(32)).hpf(250).gain(.2).room(.7).roomsize(6).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 7
+            }
+          ]
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "a bit faster please"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 10,
+            "bpm": 140,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "drums",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+                "muted": false,
+                "author": "Wout",
+                "since": 2
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "bass",
+                "role": "bass",
+                "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+                "muted": false,
+                "author": "Wout",
+                "since": 9
+              },
+              {
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+                "muted": true,
+                "author": "Wout",
+                "since": 5
+              },
+              {
+                "id": "acid",
+                "role": "arp",
+                "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+                "muted": true,
+                "author": "Wout",
+                "since": 5
+              },
+              {
+                "id": "jazzkeys",
+                "role": "chords",
+                "code": "chord(\"<Am9!4 Dm9!2 E7b9>\").voicing().s(\"fmpiano\").struct(\"[~ x ~ x] ~ [~ x ~ ~] ~\").decay(.4).sustain(0).gain(.3).room(.5).roomsize(4).hpf(300).lpf(sine.range(900, 2200).slow(32)).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 6
+              },
+              {
+                "id": "pad",
+                "role": "pad",
+                "code": "chord(\"<Am9!4 Dm9!2 Am9>/4\").voicing().s(\"supersaw\").attack(2).release(3).lpf(sine.range(700, 1400).slow(32)).hpf(250).gain(.2).room(.7).roomsize(6).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 7
+              }
+            ]
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Wout wants it faster, so I'll raise the tempo by 8 bpm to 140, keeping every layer as it is.",
+            "ops": [
+              {
+                "op": "set_tempo",
+                "bpm": 140
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Wout, we're speeding up to 140 bpm on the next phrase, the groove stays the same.",
+            "summary": "Tempo raised to 140 bpm"
+          },
+          "reply": "Wout, we're speeding up to 140 bpm on the next phrase, the groove stays the same.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2057,
+              "costUsd": 0.00030502000000000003,
+              "usage": {
+                "input": 1677,
+                "cacheWrite": 0,
+                "cacheRead": 6932,
+                "output": 136
+              },
+              "problems": []
+            }
+          ],
+          "harness": []
+        },
+        "song": {
+          "version": 10,
+          "bpm": 140,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "drums",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9).struct(\"x ~ ~ x ~ x ~ ~\")",
+              "muted": false,
+              "author": "Wout",
+              "since": 2
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "bass",
+              "role": "bass",
+              "code": "note(\"[~ a1 a1 a1]*4\").s(\"sawtooth\").velocity(\"[0 1 .8 .9]*4\").lpf(sine.range(180, 520).slow(16)).lpq(6).decay(.14).sustain(0).shape(.25).gain(.75).orbit(2)",
+              "muted": false,
+              "author": "Wout",
+              "since": 9
+            },
+            {
+              "id": "stab",
+              "role": "chords",
+              "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).lpq(8).decay(.16).sustain(0).gain(.3).delay(.5).delaytime(3/16).delayfeedback(.55).room(.4).roomsize(5).orbit(3)",
+              "muted": true,
+              "author": "Wout",
+              "since": 5
+            },
+            {
+              "id": "acid",
+              "role": "arp",
+              "code": "note(\"[a1 a2 a1 c2 a1 g2 a1 e2]*2\").s(\"sawtooth\").lpf(sine.range(250, 1800).slow(24)).lpq(16).lpenv(3).lpdecay(.12).decay(.15).sustain(.3).shape(.3).gain(.42).sometimesBy(.15, x => x.transpose(12))",
+              "muted": true,
+              "author": "Wout",
+              "since": 5
+            },
+            {
+              "id": "jazzkeys",
+              "role": "chords",
+              "code": "chord(\"<Am9!4 Dm9!2 E7b9>\").voicing().s(\"fmpiano\").struct(\"[~ x ~ x] ~ [~ x ~ ~] ~\").decay(.4).sustain(0).gain(.3).room(.5).roomsize(4).hpf(300).lpf(sine.range(900, 2200).slow(32)).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 6
+            },
+            {
+              "id": "pad",
+              "role": "pad",
+              "code": "chord(\"<Am9!4 Dm9!2 Am9>/4\").voicing().s(\"supersaw\").attack(2).release(3).lpf(sine.range(700, 1400).slow(32)).hpf(250).gain(.2).room(.7).roomsize(6).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 7
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

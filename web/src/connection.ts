@@ -2,9 +2,10 @@
 // snapshot and the events after it. A gap in the sequence numbers means a lost
 // event, so the client asks for a new snapshot. It reconnects after a drop.
 import type {
-  AgentState, ChatEntry, ClientMessage, Reaction, ReactionCounts, RoomClock, ServerMessage, User, VersionInfo,
+  AgentState, ChatEntry, ClientMessage, Reaction, ReactionCounts, ServerMessage, Timeline, User, VersionInfo,
 } from '../../shared/protocol.ts';
 import { EMPTY_SONG, type Song } from '../../shared/schema.ts';
+import type { LayerChange } from '../../shared/transition.ts';
 import { ServerClock } from './server-clock.ts';
 
 export type RoomState = {
@@ -17,20 +18,21 @@ export type RoomState = {
   agent: AgentState;
   reactions: ReactionCounts;
   mine: Set<string>; // "version:reaction"
-  clock: RoomClock | null;
+  clocks: Timeline;
+  changes: Record<string, LayerChange>; // the layer changes of the newest version
   notice: string | null;
 };
 
 export const INITIAL_STATE: RoomState = {
   status: 'connecting', you: null, song: EMPTY_SONG, versions: [], chat: [], users: [],
-  agent: { status: 'idle', queue: 0 }, reactions: {}, mine: new Set(), clock: null, notice: null,
+  agent: { status: 'idle', queue: 0 }, reactions: {}, mine: new Set(), clocks: [], changes: {}, notice: null,
 };
 
 const MAX_CHAT = 200;
 
 export type ConnectionEvents = {
   onState: (state: RoomState) => void;
-  onSong: (song: Song, clock: RoomClock, applyAt: number | null) => void;
+  onSong: (song: Song, clocks: Timeline, applyAt: number | null, changes: Record<string, LayerChange>) => void;
 };
 
 export class Connection {
@@ -117,10 +119,10 @@ export class Connection {
       this.seq = message.seq;
       this.update({
         status: 'open', you: message.you, song: message.song, versions: message.versions, chat: message.chat,
-        users: message.users, agent: message.agent, reactions: message.reactions, clock: message.clock,
+        users: message.users, agent: message.agent, reactions: message.reactions, clocks: message.clocks, changes: {},
         mine: new Set(message.mine.map((m) => `${m.version}:${m.reaction}`)),
       });
-      this.events.onSong(message.song, message.clock, null);
+      this.events.onSong(message.song, message.clocks, null, {});
       return;
     }
     if (this.seq === -1) return;
@@ -133,8 +135,8 @@ export class Connection {
 
     switch (message.type) {
       case 'song':
-        this.update({ song: message.song, clock: message.clock, versions: [...this.state.versions, message.version] });
-        this.events.onSong(message.song, message.clock, message.applyAt);
+        this.update({ song: message.song, clocks: message.clocks, changes: message.changes, versions: [...this.state.versions, message.version] });
+        this.events.onSong(message.song, message.clocks, message.applyAt, message.changes);
         return;
       case 'chat':
         this.update({ chat: [...this.state.chat, message.entry].slice(-MAX_CHAT) });

@@ -7,14 +7,15 @@ import { DRUM_BANKS, KNOWN_SOUNDS, SOUND_GROUPS } from '../shared/sounds.ts';
 import { RECIPES } from '../server/prompt.ts';
 
 const noRestore = () => undefined;
-const layer = (id: string, code: string): Op => ({ op: 'set_layer', id, role: 'drums', code, muted: false });
+const CUT = { start: 0, style: 'cut', bars: 1 } as const;
+const layer = (id: string, code: string): Op => ({ op: 'set_layer', id, role: 'drums', code, muted: false, timing: CUT });
 
 describe('applyOps', () => {
   it('adds, replaces and removes layers', () => {
     let { song, errors } = applyOps(EMPTY_SONG, [layer('drums', 's("bd*4")'), layer('hats', 's("hh*8")')], 'Alice', noRestore);
     expect(errors).toEqual([]);
     expect(song.version).toBe(1);
-    ({ song } = applyOps(song, [layer('drums', 's("bd*2")'), { op: 'remove_layer', id: 'hats' }], 'Bob', noRestore));
+    ({ song } = applyOps(song, [layer('drums', 's("bd*2")'), { op: 'remove_layer', id: 'hats', timing: CUT }], 'Bob', noRestore));
     expect(song.layers).toEqual([{ id: 'drums', role: 'drums', code: 's("bd*2")', muted: false, author: 'Bob', since: 2 }]);
   });
 
@@ -26,7 +27,7 @@ describe('applyOps', () => {
 
   it('keeps the same song when nothing applies', () => {
     expect(applyOps(EMPTY_SONG, [], 'Alice', noRestore).song).toBe(EMPTY_SONG);
-    expect(applyOps(EMPTY_SONG, [{ op: 'remove_layer', id: 'x' }], 'Alice', noRestore).song).toBe(EMPTY_SONG);
+    expect(applyOps(EMPTY_SONG, [{ op: 'remove_layer', id: 'x', timing: CUT }], 'Alice', noRestore).song).toBe(EMPTY_SONG);
   });
 
   it('restores an earlier version as a new version', () => {

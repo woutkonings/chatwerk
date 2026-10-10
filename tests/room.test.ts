@@ -3,7 +3,7 @@ import type { AgentOutcome } from '../server/agent.ts';
 import { Store } from '../server/db.ts';
 import type { TurnContext } from '../server/prompt.ts';
 import { Room, type RunTurn, type Socket } from '../server/room.ts';
-import type { ServerMessage } from '../shared/protocol.ts';
+import { roomCycle, type ServerMessage } from '../shared/protocol.ts';
 import type { AgentTurn, Song } from '../shared/schema.ts';
 
 type FakeSocket = Socket & { messages: ServerMessage[]; closed: boolean };
@@ -29,7 +29,7 @@ function changedOutcome(context: TurnContext, turn: Partial<AgentTurn> = {}, bpm
     layers: [{ id: 'kick', role: 'drums', code: KICK, muted: false, author: 'x', since: version }],
   };
   const full: AgentTurn = { plan: '', ops: [], when: 'now', reply: 'done', summary: 'added a kick', ...turn };
-  return { song, changed: true, turn: full, reply: full.reply, problems: [], attempts: [] };
+  return { song, changed: true, turn: full, reply: full.reply, problems: [], attempts: [], harness: [] };
 }
 
 function setup(runTurn: RunTurn, options: { hasBudget?: () => boolean } = {}) {
@@ -160,16 +160,32 @@ describe('Room', () => {
     expect(song.applyAt).toBe(8);
   });
 
-  it('keeps the room clock continuous when the tempo changes', async () => {
-    const { join, say, advance, now } = setup(async (c) => changedOutcome(c, {}, 150));
+  it('puts a tempo change on the next bar line as a new clock segment', async () => {
+    const { join, say, advance } = setup(async (c) => changedOutcome(c, {}, 150));
     const alice = join('Alice');
-    advance(10_000);
+    advance(10_000); // cycle 5, plus the lead of 0.5 s: 5.25, so the next bar line is cycle 6
     say(alice, 'faster');
     await settle();
-    const { clock } = ofType(alice, 'song')[0];
-    expect(clock.cps).toBeCloseTo(150 / 60 / 4);
-    expect(clock.cycle).toBeCloseTo(5);
-    expect(clock.serverMs).toBe(now());
+    const { clocks } = ofType(alice, 'song')[0];
+    expect(clocks).toHaveLength(2);
+    expect(clocks[1]).toEqual({ cycle: 6, serverMs: 1_000_000 + 12_000, cps: 150 / 60 / 4 });
+    expect(roomCycle(clocks, 1_000_000 + 11_000)).toBeCloseTo(5.5); // before the change: the old tempo
+    expect(roomCycle(clocks, 1_000_000 + 13_600)).toBeCloseTo(7); // after it: 1.6 s at 0.625 cycles per second
+  });
+
+  it('sends one change per layer, with the start in bars after the boundary', async () => {
+    const ops: AgentTurn['ops'] = [
+      { op: 'set_layer', id: 'kick', role: 'drums', code: KICK, muted: false, timing: { start: 0, style: 'cut', bars: 1 } },
+      { op: 'remove_layer', id: 'pad', timing: { start: 8, style: 'fade', bars: 3 } },
+    ];
+    const { join, say, advance } = setup(async (c) => changedOutcome(c, { when: 'next_phrase', ops }));
+    const alice = join('Alice');
+    advance(10_000);
+    say(alice, 'drop it');
+    await settle();
+    const { applyAt, changes } = ofType(alice, 'song')[0];
+    expect(applyAt).toBe(8);
+    expect(changes).toEqual({ kick: { at: 8, style: 'cut', bars: 0 }, pad: { at: 16, style: 'fade', bars: 2 } });
   });
 
   it('answers without the model when the daily budget is spent', async () => {
@@ -184,7 +200,7 @@ describe('Room', () => {
 
   it('blocks a user from the band after three refused turns', async () => {
     const refused = async (context: TurnContext): Promise<AgentOutcome> => ({
-      song: context.song, changed: false, turn: null, reply: 'no', problems: ['the model refused the request'], attempts: [],
+      song: context.song, changed: false, turn: null, reply: 'no', problems: ['the model refused the request'], attempts: [], harness: [],
     });
     const { join, say } = setup(refused);
     const mallory = join('Mallory');

@@ -29,7 +29,7 @@ const store = new Store(`${DATA_DIR}/music-chat.sqlite`);
 const runTurn: RunTurn = process.env.ANTHROPIC_API_KEY
   ? (context, restore, signal) => runAgentTurn(MODEL, context, restore, { signal })
   : async (context) => ({
-      song: context.song, changed: false, turn: null, problems: [], attempts: [],
+      song: context.song, changed: false, turn: null, problems: [], attempts: [], harness: [],
       reply: 'The band has no API key yet. Set ANTHROPIC_API_KEY in .env and restart the server.',
     });
 

@@ -6,10 +6,11 @@ import type { AgentOutcome } from './agent.ts';
 import type { Store } from './db.ts';
 import type { TurnContext } from './prompt.ts';
 import {
-  ClientMessage, REACTION_EMOJI, cpsFromBpm, cycleAt,
-  type AgentState, type ChatEntry, type RoomClock, type ServerMessage, type User,
+  ClientMessage, REACTION_EMOJI, clockAt, cpsFromBpm, roomCycle, timeAtCycle,
+  type AgentState, type ChatEntry, type ServerMessage, type Timeline, type User,
 } from '../shared/protocol.ts';
 import { EMPTY_SONG, type Song } from '../shared/schema.ts';
+import { changeFor, type LayerChange } from '../shared/transition.ts';
 
 export const MAX_CLIENTS = 16;
 const MAX_MESSAGE_BYTES = 4096;
@@ -53,7 +54,7 @@ export class Room {
   private socketWindows = new Map<Socket, { start: number; count: number }>();
   private limits = new Map<string, Limits>(); // per client id, so a reconnect keeps them
   private song: Song;
-  private clock: RoomClock;
+  private clocks: Timeline;
   private seq = 0;
   private pending: Pending[] = [];
   private timer: ReturnType<typeof setTimeout> | null = null;
@@ -64,7 +65,7 @@ export class Room {
     this.id = id;
     this.deps = { debounceMs: 1500, now: Date.now, ...deps };
     this.song = deps.store.latestSong(id) ?? EMPTY_SONG;
-    this.clock = { cycle: 0, serverMs: this.deps.now(), cps: cpsFromBpm(this.song.bpm) };
+    this.clocks = [{ cycle: 0, serverMs: this.deps.now(), cps: cpsFromBpm(this.song.bpm) }];
   }
 
   get size() {
@@ -231,21 +232,34 @@ export class Room {
     }
   }
 
+  // Publishes a new version. The changes start at a boundary in room cycles that
+  // every client reaches at the same time. A tempo change lands on a bar line.
   private publish(outcome: AgentOutcome, author: string) {
     const now = this.deps.now();
     const song = outcome.song;
     const version = this.deps.store.addVersion(this.id, song, author, outcome.turn?.summary ?? '', now);
+    this.pruneClocks(now);
+    const cycle = roomCycle(this.clocks, now + TRANSITION_LEAD_MS);
+    const when = outcome.turn?.when ?? 'now';
+    const applyAt = when === 'now' ? cycle : when === 'next_bar' ? Math.ceil(cycle) : Math.ceil(cycle / 4) * 4;
     if (song.bpm !== this.song.bpm) {
-      this.clock = { cycle: cycleAt(this.clock, now), serverMs: now, cps: cpsFromBpm(song.bpm) };
+      const tempoAt = when === 'now' ? Math.ceil(cycle) : applyAt;
+      this.clocks = this.clocks.filter((clock, i) => i === 0 || clock.cycle < tempoAt);
+      const base = this.clocks.at(-1)!;
+      this.clocks.push({ cycle: tempoAt, serverMs: timeAtCycle(base, tempoAt), cps: cpsFromBpm(song.bpm) });
+    }
+    const changes: Record<string, LayerChange> = {};
+    for (const op of outcome.turn?.ops ?? []) {
+      if (op.op === 'set_layer' || op.op === 'remove_layer') changes[op.id] = changeFor(op.timing, applyAt);
     }
     this.song = song;
-    const when = outcome.turn?.when ?? 'now';
-    let applyAt: number | null = null;
-    if (when !== 'now') {
-      const cycle = cycleAt(this.clock, now + TRANSITION_LEAD_MS);
-      applyAt = when === 'next_bar' ? Math.ceil(cycle) : Math.ceil(cycle / 4) * 4;
-    }
-    this.broadcast({ type: 'song', seq: 0, song, version, clock: this.clock, applyAt });
+    this.broadcast({ type: 'song', seq: 0, song, version, clocks: this.clocks, applyAt, changes });
+  }
+
+  // Keeps the active clock segment and the segments that start later.
+  private pruneClocks(now: number) {
+    const active = clockAt(this.clocks, now);
+    this.clocks = this.clocks.filter((clock) => clock === active || clock.serverMs > now);
   }
 
   private strike(batch: Pending[]) {
@@ -286,7 +300,7 @@ export class Room {
       agent: this.agent,
       reactions: store.reactions(this.id),
       mine: store.reactionsOf(this.id, client.clientId),
-      clock: this.clock,
+      clocks: this.clocks,
     });
   }
 
@@ -322,7 +336,7 @@ export class Room {
   }
 
   // Exposed for tests.
-  get state(): { song: Song; agent: AgentState; clock: RoomClock; chat: ChatEntry[] } {
-    return { song: this.song, agent: this.agent, clock: this.clock, chat: this.deps.store.chat(this.id) };
+  get state(): { song: Song; agent: AgentState; clocks: Timeline; chat: ChatEntry[] } {
+    return { song: this.song, agent: this.agent, clocks: this.clocks, chat: this.deps.store.chat(this.id) };
   }
 }

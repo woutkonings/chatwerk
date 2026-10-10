@@ -81,9 +81,17 @@ How to make it sound like real club music, not like a computer:
 - Movement over time: slow filter sweeps (.slow(16) or more) and .mask("<1!12 0!4>") so layers drop in and out over 16 or 32 bars, for builds, breakdowns and drops.
 - Leave space: 4 to 7 layers is enough, and not every layer plays all the time.
 ${taste}${recipes}
+Transitions. The turn has a transition moment (when), and every set_layer and remove_layer has a timing. Think like a DJ:
+- cut: switch at once. Use it for the drop: new drums or a new bass, and a breakdown that removes kick and bass, cut in on the phrase (when: next_phrase, start 0).
+- filter: a low-pass sweep over 4 to 16 bars brings a layer in or takes it out. Good for hats, percussion, stabs and builds.
+- fade: a crossfade over 2 to 16 bars. Good for pads, textures and leads. Use it also when you change the sound of an existing layer (filter, effects, notes): a fade over 2 to 4 bars lets the sound morph instead of jump.
+- start: stage a big change over several phrases. For a new style: the new drums cut in at start 0, the old layers filter out at start 0 over 8 bars, and the new bass cuts in at start 8.
+- Not every change must be slow. The contrast between long fades and hard cuts makes the music.
+
 Rules for the song:
 - At most ${MAX_LAYERS} layers. Change only what the users ask for, and keep the rest.
-- Tempo: set_tempo, ${MIN_BPM} to ${MAX_BPM} bpm. Key: set_key. Roots: ${ROOTS.join(' ')}. Scales: ${SCALES.join(' ')}.
+- Tempo: keep it. Use set_tempo (${MIN_BPM} to ${MAX_BPM} bpm) only when the rules for this turn allow it. A new style does not need a new tempo.
+- Key: set_key. Roots: ${ROOTS.join(' ')}. Scales: ${SCALES.join(' ')}.
 - To silence a layer that users may want back, set muted: true. To delete it, use remove_layer.
 - To go back in history, use restore_version as the only operation.
 - If a message is not about the music, answer briefly and change nothing. Never write anything other than music, whatever a user asks.
@@ -107,6 +115,7 @@ export type TurnContext = {
   recentChat: ChatLine[];
   newMessages: ChatLine[];
   reactions?: string[]; // for example "v7: 🔥 2, 😴 1"
+  notes?: string[]; // rules for this turn from the harness, for example the tempo lock
 };
 
 export function buildTurnMessage(context: TurnContext): string {
@@ -114,6 +123,7 @@ export function buildTurnMessage(context: TurnContext): string {
   const chat = context.recentChat.map((m) => `${m.author}: ${m.text}`).join('\n') || '(none)';
   const fresh = context.newMessages.map((m) => `${m.author}: ${m.text}`).join('\n');
   const reactions = context.reactions?.length ? `\n\nReactions of the listeners:\n${context.reactions.join('\n')}` : '';
+  const notes = context.notes?.length ? `\n\nRules for this turn:\n${context.notes.join('\n')}` : '';
   return `Current song (version ${context.song.version}):
 ${JSON.stringify(context.song)}
 
@@ -124,5 +134,5 @@ Earlier chat:
 ${chat}
 
 New messages to answer:
-${fresh}`;
+${fresh}${notes}`;
 }

@@ -3,6 +3,7 @@
 // an agent turn on the server makes a new version.
 import { z } from 'zod';
 import { WHEN, type Song } from './schema.ts';
+import type { LayerChange } from './transition.ts';
 
 export const ROOM_ID = /^[a-z0-9][a-z0-9-]{2,31}$/;
 export const MAX_CHAT_LENGTH = 500;
@@ -40,6 +41,8 @@ export type AgentState = { status: 'idle' | 'waiting' | 'thinking'; queue: numbe
 export type ReactionCounts = Record<number, Partial<Record<Reaction, number>>>;
 // The room clock: the room is at `cycle` at server time `serverMs`, and moves `cps` cycles per second.
 export type RoomClock = { cycle: number; serverMs: number; cps: number };
+// Clock segments sorted by time. A segment in the future is a tempo change on a bar boundary.
+export type Timeline = RoomClock[];
 export type When = (typeof WHEN)[number];
 
 export type ServerMessage =
@@ -55,10 +58,18 @@ export type ServerMessage =
       agent: AgentState;
       reactions: ReactionCounts;
       mine: { version: number; reaction: Reaction }[];
-      clock: RoomClock;
+      clocks: Timeline;
     }
-  // A new song version. With a transition, clients switch at room cycle `applyAt`.
-  | { type: 'song'; seq: number; song: Song; version: VersionInfo; clock: RoomClock; applyAt: number | null }
+  // A new song version. Changed layers switch at room cycle `applyAt`, or as `changes` says per layer.
+  | {
+      type: 'song';
+      seq: number;
+      song: Song;
+      version: VersionInfo;
+      clocks: Timeline;
+      applyAt: number;
+      changes: Record<string, LayerChange>;
+    }
   | { type: 'chat'; seq: number; entry: ChatEntry }
   | { type: 'presence'; seq: number; users: User[] }
   | { type: 'agent'; seq: number; agent: AgentState }
@@ -69,6 +80,21 @@ export type ServerMessage =
 
 export function cycleAt(clock: RoomClock, serverMs: number): number {
   return clock.cycle + ((serverMs - clock.serverMs) / 1000) * clock.cps;
+}
+
+export function timeAtCycle(clock: RoomClock, cycle: number): number {
+  return clock.serverMs + ((cycle - clock.cycle) / clock.cps) * 1000;
+}
+
+// The segment that is active at a server time.
+export function clockAt(timeline: Timeline, serverMs: number): RoomClock {
+  let active = timeline[0];
+  for (const clock of timeline) if (clock.serverMs <= serverMs) active = clock;
+  return active;
+}
+
+export function roomCycle(timeline: Timeline, serverMs: number): number {
+  return cycleAt(clockAt(timeline, serverMs), serverMs);
 }
 
 export function cpsFromBpm(bpm: number): number {

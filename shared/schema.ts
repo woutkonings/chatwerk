@@ -11,6 +11,11 @@ export const SCALES = [
 ] as const;
 export const ROLES = ['drums', 'perc', 'bass', 'chords', 'pad', 'lead', 'arp', 'fx'] as const;
 export const WHEN = ['now', 'next_bar', 'next_phrase'] as const;
+// How a layer change sounds: switch at once, crossfade the volume, or sweep a low-pass filter.
+export const STYLES = ['cut', 'fade', 'filter'] as const;
+// Allowed values. Our code rounds the agent's numbers to the nearest one.
+export const START_BARS = [0, 4, 8, 16] as const;
+export const FADE_BARS = [1, 2, 4, 8, 16] as const;
 
 export const LAYER_ID = /^[a-z][a-z0-9]{0,15}$/;
 export const MAX_LAYERS = 8;
@@ -21,6 +26,7 @@ export const MAX_SONG_BYTES = 8192;
 export type Root = (typeof ROOTS)[number];
 export type Scale = (typeof SCALES)[number];
 export type Role = (typeof ROLES)[number];
+export type Style = (typeof STYLES)[number];
 
 export type Layer = {
   id: string;
@@ -50,16 +56,25 @@ const SetKey = z.object({
   root: z.enum(ROOTS),
   scale: z.enum(SCALES),
 });
+const Timing = z.object({
+  start: z.number().describe('Bars after the transition moment when this change begins: 0, 4, 8 or 16. Stage a big change over several starts.'),
+  style: z.enum(STYLES).describe('cut: switch at once. fade: crossfade the volume. filter: a low-pass filter sweep, like a DJ.'),
+  bars: z.number().describe('Length of a fade or filter sweep in bars: 1, 2, 4, 8 or 16. Use 1 for cut.'),
+});
+export type Timing = z.infer<typeof Timing>;
+
 const SetLayer = z.object({
   op: z.literal('set_layer'),
   id: z.string().describe('Lowercase id, for example "drums" or "bass2". Same id replaces the layer.'),
   role: z.enum(ROLES),
   code: z.string().describe('Exactly one Strudel expression. No tempo calls, no labels, no comments.'),
   muted: z.boolean(),
+  timing: Timing,
 });
 const RemoveLayer = z.object({
   op: z.literal('remove_layer'),
   id: z.string(),
+  timing: Timing,
 });
 const RestoreVersion = z.object({
   op: z.literal('restore_version'),

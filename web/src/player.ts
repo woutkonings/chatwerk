@@ -5,8 +5,9 @@
 // bar at the same time, and a change with a transition lands on one beat.
 import * as strudel from '@strudel/web';
 import { buildLayer, type StrudelLib } from '../../shared/interpret.ts';
-import { cycleAt, type RoomClock } from '../../shared/protocol.ts';
+import { clockAt, roomCycle, type Timeline } from '../../shared/protocol.ts';
 import type { Song } from '../../shared/schema.ts';
+import { changeEnd, transitionLayer, type LayerChange } from '../../shared/transition.ts';
 import { gateValue } from './hap-gate.ts';
 import type { ServerClock } from './server-clock.ts';
 
@@ -125,14 +126,27 @@ function guard(pattern: any, onError: (message: string) => void): any {
 
 export type LayerErrors = Record<string, string>;
 
+const outputLatencyMs = () => {
+  const context: AudioContext = strudel.getAudioContext();
+  return (context.outputLatency || context.baseLatency || 0) * 1000;
+};
+// The scheduler plans events about 0.1 s ahead of the audio clock.
+const SCHEDULER_LEAD_MS = 100;
+
+// One layer as this listener hears it. `pattern` includes a running transition;
+// after room cycle `settles`, the plain pattern sounds the same. A removed layer
+// has no code and no plain pattern, and stays only while it fades out.
+type Track = { code: string | null; plain: any | null; pattern: any | null; settles: number };
+
 export class Player {
   playing = false;
   private repl: any = null;
-  private song: Song | null = null;
-  private clock: RoomClock | null = null;
-  private roomPattern: any = strudel.silence; // the song in room cycles
+  private clocks: Timeline = [];
+  private tracks = new Map<string, Track>();
   private offset = 0; // local scheduler cycle + offset = room cycle
   private timer: ReturnType<typeof setInterval> | null = null;
+  private tempoTimer: ReturnType<typeof setTimeout> | null = null;
+  private schedulerCps: number | null = null;
   private mutes = new Set<string>();
   private solo: string | null = null;
   private errors: LayerErrors = {};
@@ -147,8 +161,9 @@ export class Player {
     await Promise.race([audioReady, sleep(1500)]);
     strudel.setMaxPolyphony(MAX_POLYPHONY);
     ensureLimiter();
-    if (this.clock) this.repl.setCps(this.clock.cps);
-    preload(this.compose(), this.roomNow());
+    this.schedulerCps = null;
+    this.applyTempo();
+    preload(this.mix(), this.roomNow());
     await this.repl.setPattern(strudel.silence, true);
     this.playing = true;
     // The scheduler needs a few ticks before its cycle position is exact.
@@ -159,6 +174,7 @@ export class Player {
   stop() {
     this.playing = false;
     if (this.timer) clearInterval(this.timer);
+    if (this.tempoTimer) clearTimeout(this.tempoTimer);
     this.timer = null;
     this.repl?.stop();
   }
@@ -168,58 +184,71 @@ export class Player {
     if (master) master.gain.setTargetAtTime(value, master.context.currentTime, 0.05);
   }
 
-  // A new song from the server. With `applyAt`, the change lands at that room cycle.
-  setSong(song: Song, clock: RoomClock, applyAt: number | null) {
-    const tempoChanged = this.clock !== null && this.clock.cps !== clock.cps;
-    this.song = song;
-    this.clock = clock;
-    const next = this.compose();
-    if (replReady) preload(next, applyAt ?? this.roomNow());
-    if (this.playing && applyAt !== null && applyAt > this.roomNow()) {
-      const at = applyAt;
-      this.roomPattern = strudel.stack(
-        this.roomPattern.filterHaps((hap: any) => hap.whole && hap.whole.begin < at),
-        next.filterHaps((hap: any) => hap.whole && hap.whole.begin >= at),
-      );
-    } else {
-      this.roomPattern = next;
+  // A new song from the server. Each changed layer cuts, fades or filters as
+  // `changes` says, from room cycle `applyAt`. Without `applyAt` (a snapshot), or
+  // while the player is stopped, the song replaces the old one at once.
+  setSong(song: Song, clocks: Timeline, applyAt: number | null, changes: Record<string, LayerChange> = {}) {
+    this.clocks = clocks;
+    if (this.repl) this.applyTempo();
+    const now = this.roomNow();
+    const errors: LayerErrors = {};
+    const targets = new Map<string, { code: string; plain: any }>();
+    for (const layer of song.layers) {
+      if (layer.muted) continue;
+      try {
+        const plain = guard(buildLayer(layer.code, lib), (message) => this.reportError(layer.id, message));
+        targets.set(layer.id, { code: layer.code, plain });
+      } catch (error) {
+        errors[layer.id] = (error as Error).message;
+      }
     }
-    if (!this.playing) return;
-    if (tempoChanged) {
-      this.repl.setCps(clock.cps);
-      setTimeout(() => this.resync(true), 400);
+    for (const id of new Set([...this.tracks.keys(), ...targets.keys()])) {
+      const track = this.tracks.get(id);
+      const target = targets.get(id) ?? null;
+      if ((track?.code ?? null) === (target?.code ?? null)) continue; // unchanged
+      const change = this.playing && applyAt !== null ? changes[id] ?? { at: applyAt, style: 'cut' as const, bars: 0 } : null;
+      if (!change) {
+        this.tracks.set(id, { code: target?.code ?? null, plain: target?.plain ?? null, pattern: target?.plain ?? null, settles: -Infinity });
+        continue;
+      }
+      const from = track ? (track.settles <= now ? track.plain : track.pattern) : null;
+      const pattern = transitionLayer(lib, from, target?.plain ?? null, change);
+      this.tracks.set(id, { code: target?.code ?? null, plain: target?.plain ?? null, pattern, settles: changeEnd(change) });
+      if (target && replReady) preload(target.plain, change.at);
     }
-    this.apply();
+    this.errors = errors;
+    this.onErrors({ ...errors });
+    this.cleanUp(now);
+    if (this.playing) this.apply();
   }
 
   // Local mute and solo change only what this listener hears.
   setLocal(mutes: Set<string>, solo: string | null) {
     this.mutes = new Set(mutes);
     this.solo = solo;
-    if (!this.song) return;
-    this.roomPattern = this.compose();
     if (this.playing) this.apply();
   }
 
-  private compose(): any {
-    const song = this.song;
-    if (!song) return strudel.silence;
-    const errors: LayerErrors = {};
+  // The room cycle now, for the transition labels in the UI.
+  roomNow(): number {
+    return this.clocks.length ? roomCycle(this.clocks, this.serverClock.now()) : 0;
+  }
+
+  // All audible layers, in room cycles.
+  private mix(): any {
+    const now = this.roomNow();
     const parts: any[] = [];
-    for (const layer of song.layers) {
-      let pattern: any;
-      try {
-        pattern = buildLayer(layer.code, lib);
-      } catch (error) {
-        errors[layer.id] = (error as Error).message;
-        continue;
-      }
-      const audible = this.solo ? this.solo === layer.id : !layer.muted && !this.mutes.has(layer.id);
-      if (audible) parts.push(guard(pattern, (message) => this.reportError(layer.id, message)));
+    for (const [id, track] of this.tracks) {
+      const audible = this.solo ? this.solo === id : !this.mutes.has(id);
+      const pattern = track.settles <= now ? track.plain : track.pattern;
+      if (audible && pattern) parts.push(pattern);
     }
-    this.errors = errors;
-    this.onErrors({ ...errors });
     return parts.length ? strudel.stack(...parts) : strudel.silence;
+  }
+
+  // Removed layers leave when their fade-out is over.
+  private cleanUp(now: number) {
+    for (const [id, track] of this.tracks) if (track.code === null && track.settles <= now) this.tracks.delete(id);
   }
 
   private reportError(id: string, message: string) {
@@ -228,17 +257,30 @@ export class Player {
     this.onErrors(this.errors);
   }
 
-  private roomNow(): number {
-    return this.clock ? cycleAt(this.clock, this.serverClock.now()) : 0;
+  // Sets the scheduler tempo to the clock segment it plans for, and sets a timer
+  // for the next segment (a tempo change on a bar line).
+  private applyTempo() {
+    if (this.tempoTimer) clearTimeout(this.tempoTimer);
+    this.tempoTimer = null;
+    if (!this.repl || !this.clocks.length) return;
+    const leadMs = outputLatencyMs() + SCHEDULER_LEAD_MS;
+    const planned = this.serverClock.now() + leadMs;
+    const target = clockAt(this.clocks, planned);
+    if (target.cps !== this.schedulerCps) {
+      this.repl.setCps(target.cps);
+      if (this.schedulerCps !== null && this.playing) setTimeout(() => this.resync(true), 400);
+      this.schedulerCps = target.cps;
+    }
+    const next = this.clocks.find((clock) => clock.serverMs > planned);
+    if (next) this.tempoTimer = setTimeout(() => this.applyTempo(), next.serverMs - planned);
   }
 
   // Finds the offset between the local scheduler and the room clock. The output
   // latency of the device (for example Bluetooth) counts, so the speakers line up.
   private resync(force = false) {
-    if (!this.playing || !this.clock) return;
-    const context: AudioContext = strudel.getAudioContext();
-    const latencyMs = (context.outputLatency || context.baseLatency || 0) * 1000;
-    const room = cycleAt(this.clock, this.serverClock.now() + latencyMs);
+    if (!this.playing || !this.clocks.length) return;
+    this.cleanUp(this.roomNow());
+    const room = roomCycle(this.clocks, this.serverClock.now() + outputLatencyMs());
     const offset = Math.round((room - this.repl.scheduler.now()) * 1000) / 1000;
     if (!force && Math.abs(offset - this.offset) < MAX_DRIFT_CYCLES) return;
     this.offset = offset;
@@ -248,10 +290,13 @@ export class Player {
   // For tests in the browser console: the room cycle that this listener hears now.
   debug() {
     const local = this.playing ? this.repl.scheduler.now() : null;
-    return { playing: this.playing, offset: this.offset, cps: this.clock?.cps, heardCycle: local === null ? null : local + this.offset, roomCycle: this.roomNow() };
+    return {
+      playing: this.playing, offset: this.offset, cps: this.schedulerCps, layers: [...this.tracks.keys()],
+      heardCycle: local === null ? null : local + this.offset, roomCycle: this.roomNow(),
+    };
   }
 
   private apply() {
-    void this.repl.setPattern(this.roomPattern.early(this.offset), true);
+    void this.repl.setPattern(this.mix().early(this.offset), true);
   }
 }

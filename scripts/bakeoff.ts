@@ -28,6 +28,19 @@ const SESSIONS: Record<string, ChatLine[][]> = {
     [{ author: 'Alice', text: 'Go darker and more industrial' }],
     [{ author: 'Bob', text: 'Hmm, go back to the version before the amen break' }],
   ],
+  // The session of the first live test (2026-10-10): fast style switches.
+  switches: [
+    [{ author: 'Wout', text: 'Start a dark underground techno groove at 132 bpm' }],
+    [{ author: 'Wout', text: 'make it breakbeat' }],
+    [{ author: 'Wout', text: 'more like electro breakbeat' }],
+    [{ author: 'Wout', text: 'now back to techy stabby synth, keep the acid' }],
+    [{ author: 'Wout', text: 'make simpler' }],
+    [{ author: 'Wout', text: 'now groovy jazzy techno' }],
+    [{ author: 'Wout', text: 'bring in a dreamy pad, slowly' }],
+    [{ author: 'Wout', text: 'drop the bass for a breakdown' }],
+    [{ author: 'Wout', text: 'bring the bass back with a big drop' }],
+    [{ author: 'Wout', text: 'a bit faster please' }],
+  ],
   general: [
     [{ author: 'Alice', text: 'Start a chill lo-fi beat' }],
     [{ author: 'Alice', text: 'Add a warm bass line that follows the chords' }],
@@ -68,6 +81,14 @@ async function runSession(run: Run, session: ChatLine[][]): Promise<TurnLog[]> {
   return logs;
 }
 
+// For example "set_layer bass (cut at +0)" or "remove_layer pad (fade 8 bars at +4)".
+function describeOp(op: AgentOutcome['turn'] extends infer T ? T extends { ops: (infer O)[] } ? O : never : never): string {
+  if (op.op === 'set_tempo') return `set_tempo ${op.bpm}`;
+  if (op.op !== 'set_layer' && op.op !== 'remove_layer') return op.op;
+  const { start, style, bars } = op.timing;
+  return `${op.op} ${op.id} (${style === 'cut' ? 'cut' : `${style} ${bars} bars`} at +${start})`;
+}
+
 const sum = (values: number[]) => values.reduce((a, b) => a + b, 0);
 const median = (values: number[]) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)] ?? 0;
 const p95 = (values: number[]) => [...values].sort((a, b) => a - b)[Math.ceil(values.length * 0.95) - 1] ?? 0;
@@ -80,14 +101,16 @@ function listenAfter(logs: TurnLog[], turns: number): string {
 
 function report(results: Map<string, { run: Run; logs: TurnLog[] }>): string {
   const lines: string[] = [`# Bake-off ${new Date().toISOString().slice(0, 16).replace('T', ' ')}, session "${sessionName}"`, ''];
-  lines.push('| Setup | First try OK | Final OK | Turn latency p50 / p95 | Cost per turn | Total cost |');
-  lines.push('|---|---|---|---|---|---|');
+  lines.push('| Setup | First try OK | Final OK | Tempo changes | Harness fixes | Turn latency p50 / p95 | Cost per turn | Total cost |');
+  lines.push('|---|---|---|---|---|---|---|---|');
   for (const [setup, { logs }] of results) {
     const firstOk = logs.filter((l) => l.outcome.attempts[0]?.problems.length === 0).length;
     const finalOk = logs.filter((l) => l.outcome.problems.length === 0).length;
     const latencies = logs.map((l) => sum(l.outcome.attempts.map((a) => a.latencyMs)));
     const cost = sum(logs.flatMap((l) => l.outcome.attempts.map((a) => a.costUsd)));
-    lines.push(`| ${setup} | ${firstOk}/${logs.length} | ${finalOk}/${logs.length} | ${(median(latencies) / 1000).toFixed(1)} s / ${(p95(latencies) / 1000).toFixed(1)} s | $${(cost / logs.length).toFixed(5)} | $${cost.toFixed(4)} |`);
+    const tempoChanges = logs.filter((l, i) => i > 0 && l.song.bpm !== logs[i - 1].song.bpm).length;
+    const fixes = sum(logs.map((l) => l.outcome.harness.length));
+    lines.push(`| ${setup} | ${firstOk}/${logs.length} | ${finalOk}/${logs.length} | ${tempoChanges} | ${fixes} | ${(median(latencies) / 1000).toFixed(1)} s / ${(p95(latencies) / 1000).toFixed(1)} s | $${(cost / logs.length).toFixed(5)} | $${cost.toFixed(4)} |`);
   }
   lines.push('', '| Listen | After turn 4 | After turn 9 |', '|---|---|---|');
   for (const [label, { logs }] of results) lines.push(`| ${label} | ${listenAfter(logs, 4)} | ${listenAfter(logs, 9)} |`);
@@ -101,7 +124,8 @@ function report(results: Map<string, { run: Run; logs: TurnLog[] }>): string {
       const timing = outcome.attempts.map((a) => `${(a.latencyMs / 1000).toFixed(1)} s`).join(' + ');
       lines.push(`### Turn ${index + 1}: ${said}`, '');
       lines.push(`- Reply: ${outcome.reply}`);
-      if (outcome.turn) lines.push(`- Plan: ${outcome.turn.plan}`, `- Operations: ${outcome.turn.ops.map((op) => op.op + ('id' in op ? ` ${op.id}` : '')).join(', ') || 'none'} (when: ${outcome.turn.when})`);
+      if (outcome.turn) lines.push(`- Plan: ${outcome.turn.plan}`, `- Operations (when: ${outcome.turn.when}): ${outcome.turn.ops.map(describeOp).join(', ') || 'none'}`);
+      if (outcome.harness.length) lines.push(`- Harness: ${outcome.harness.join('; ')}`);
       lines.push(`- Attempts: ${outcome.attempts.length} (${timing}), song version ${log.song.version}`);
       if (outcome.changed) lines.push(`- Listen: [version ${log.song.version} in strudel.cc](${strudelUrl(log.song)})`);
       for (const [i, attempt] of outcome.attempts.entries()) {
