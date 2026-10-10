@@ -2,7 +2,10 @@
 // never changes between turns, so the provider can cache it.
 import { FUNCTIONS, METHODS, SIGNALS } from '../shared/allowlist.ts';
 import { MAX_LAYERS, MAX_BPM, MIN_BPM, ROOTS, SCALES, type Song } from '../shared/schema.ts';
+import type { MixReport } from '../shared/protocol.ts';
+import type { SetPosition } from '../shared/set.ts';
 import { SOUND_GROUPS } from '../shared/sounds.ts';
+import type { TurnMode } from './harness.ts';
 
 const SIGNATURES = [
   'off(time, x => x.method(...))', 'every(n, x => x.method(...))', 'sometimesBy(p, x => ...)',
@@ -43,6 +46,8 @@ export const RECIPES: [string, string][] = [
   ['pad', 'chord("<Am9 Dm9>/4").voicing().s("supersaw").attack(1).release(2).lpf(900).hpf(200).gain(.18).room(.7).roomsize(6).orbit(3)'],
   ['amen', 's("amencutup*16").n("<[0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15] [0 1 2 3 0 1 6 7 8 9 2 3 12 13 14 15]>").gain(.4).hpf(300)'],
   ['industrial texture', 's("industrial*2").n("<3 7 12 20>").hpf(800).gain(.3).delay(.4).delaytime(3/16).delayfeedback(.6).orbit(3)'],
+  ['syncopated bass', 'note("[~ a1] [~ a1 a1] ~ [a1 ~ ~ e1]").s("sawtooth").lpf(sine.range(200, 700).slow(16)).lpq(8).decay(.12).sustain(0).shape(.2).gain(.72).orbit(2)'],
+  ['broken percussion', 's("lt(5,16,2), rim(3,8,1)").bank("RolandTR707").velocity("[.5 1 .7 .9]*4").gain(.3).hpf(500).pan(sine.slow(5))'],
 ];
 
 const RECIPE_TEXT = `
@@ -62,7 +67,7 @@ Rules for a layer:
 - Exactly one Strudel expression, for example: n("0 2 <4 5> 7").scale("C3:minor").s("piano").room(.3)
 - Mini-notation always in double quotes.
 - No variables, semicolons, comments, labels ($:, name:), setcps, setcpm or samples().
-- Use only the names and sounds listed below. Anything else is rejected.
+- Use only the names and sounds listed below, plus motif("name") for a motif of the song. Anything else is rejected.
 - Pass functions as x => x.method(...), for example .off(1/8, x => x.transpose(12)).
 - .add(), .sub() and .mul() work only on plain number patterns, e.g. n("0 2".add("<0 3>")). To shift notes after .s() or other controls, use .transpose(n).
 - Melodic layers use the song key: n("...").scale("<root><octave>:<scale>"), e.g. scale("Eb2:minor") for a bass.
@@ -87,6 +92,21 @@ Transitions. The turn has a transition moment (when), and every set_layer and re
 - fade: a crossfade over 2 to 16 bars. Good for pads, textures and leads. Use it also when you change the sound of an existing layer (filter, effects, notes): a fade over 2 to 4 bars lets the sound morph instead of jump.
 - start: stage a big change over several phrases. For a new style: the new drums cut in at start 0, the old layers filter out at start 0 over 8 bars, and the new bass cuts in at start 8.
 - Not every change must be slow. The contrast between long fades and hard cuts makes the music.
+
+Moves that code makes for you. Prefer them to rewriting a layer:
+- automate: move one parameter of a layer over bars, for builds and drops. Example: open the acid filter to 3000 Hz over 16 bars (param lpf, to 3000), or more room on the stabs over 8 bars. The layer keeps the end value. A closed filter is lpf 200 to 600, an open one 3000 to 18000.
+- vary: change the rhythm of a layer without new code: thin, busier, fill (every 4th bar), ghost (quiet 16th ghost notes), offbeat (an 8th later), shuffle. An empty list removes the variations.
+- set_swing: one shuffle for all layers. 0 for straight techno, 0.05 to 0.12 for a rolling groove, 0.15 to 0.3 for house, garage and broken beats.
+- set_motif: store a short idea in scale degrees (mini-notation, for example "0 ~ 3 [0 5] ~ 7 3 ~"). Layers share it with motif("a"), for example n(motif("a")).scale("A1:minor").s("sawtooth"). A motif ties the bass, the acid and the stabs together. Use one motif in at most 2 layers, and never the same way twice: another octave, another rhythm (struct, euclid), another order (rev, iter, palindrome) or a part of it (linger).
+- set_phase: move the live set to another phase, only when a user asks for it ("go to the peak"). Make the changes that the new phase needs in the same turn. For a breakdown, mute kick and bass with a filter (muted: true), so the drop can bring them back.
+
+The live set. The music is a DJ set of an hour or more, not a song with an end. The rules for this turn tell you the phase, the energy target and what you hear now (the mix report). Make every change fit the phase and move the energy toward the target. When the report finds a problem, fix it in the same turn if the users ask for nothing else.
+
+Groove. Club music lives on syncopation and space:
+- Put some hits on the odd 16ths: a bass like note("[~ a1] [~ a1 a1] ~ [a1 ~ ~ e1]"), percussion with euclid(5,16) or (7,16) and a rotation, ghost notes with a low velocity.
+- Kick and bass interlock: the bass plays between the kicks, not on every kick.
+- Rests make the groove. Not every layer plays on the beat, and not every layer plays all the time.
+- A laid-back clap or snare: .late(1/64). Hats with accents, and a light swing when it fits.
 
 Rules for the song:
 - At most ${MAX_LAYERS} layers. Change only what the users ask for, and keep the rest.
@@ -116,6 +136,9 @@ export type TurnContext = {
   newMessages: ChatLine[];
   reactions?: string[]; // for example "v7: 🔥 2, 😴 1"
   notes?: string[]; // rules for this turn from the harness, for example the tempo lock
+  set?: SetPosition | null; // where the live set is
+  report?: MixReport | null; // what the band hears in the current song
+  mode?: TurnMode; // a user request, or an autopilot turn
 };
 
 export function buildTurnMessage(context: TurnContext): string {

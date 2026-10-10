@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { enforce, tempoNote, tempoPolicy } from '../server/harness.ts';
+import { enforce, pickMutation, tempoNote, tempoPolicy } from '../server/harness.ts';
 import type { AgentTurn, Song } from '../shared/schema.ts';
 
 const SONG: Song = {
@@ -54,5 +54,44 @@ describe('enforce', () => {
     const t = turn([{ op: 'set_layer', id: 'pad', role: 'pad', code: 'note("a3")', muted: false, timing: { start: 6, style: 'fade', bars: 7 } }]);
     enforce(t, { kind: 'locked', bpm: 132 }, SONG);
     expect(t.ops[0]).toMatchObject({ timing: { start: 4, style: 'fade', bars: 8 } });
+  });
+});
+
+describe('mutations', () => {
+  const layers: Song['layers'] = [
+    { id: 'kick', role: 'drums', code: 's("bd*4")', muted: false, author: '', since: 5 },
+    { id: 'rim', role: 'perc', code: 's("rim*4")', muted: false, author: '', since: 2 },
+    { id: 'bass', role: 'bass', code: 'note("a1*4")', muted: false, author: '', since: 3 },
+    { id: 'stab', role: 'chords', code: 'note("a3")', muted: false, author: '', since: 1 },
+  ];
+  const song = { ...SONG, layers };
+
+  it('targets the layer that did not change for the longest time', () => {
+    expect(pickMutation(song, [])).toEqual({ kind: 'rhythm', idea: expect.stringContaining('"rim"') });
+    // The kick is never the target of a rhythm twist, even when it is the oldest layer.
+    const oldKick = { ...song, layers: song.layers.map((l) => (l.id === 'kick' ? { ...l, since: 0 } : l)) };
+    expect(pickMutation(oldKick, [])).toEqual({ kind: 'rhythm', idea: expect.stringContaining('"rim"') });
+  });
+
+  it('never repeats one of the last two kinds', () => {
+    const seen: string[] = [];
+    const recent: ReturnType<typeof pickMutation>['kind'][] = [];
+    for (let i = 0; i < 8; i++) {
+      const { kind } = pickMutation(song, recent);
+      expect(recent.slice(-2)).not.toContain(kind);
+      recent.push(kind);
+      seen.push(kind);
+    }
+    expect(new Set(seen).size).toBeGreaterThanOrEqual(5);
+  });
+});
+
+describe('mutations per phase', () => {
+  it('gives no drum twists in a breakdown', () => {
+    const layers: Song['layers'] = [
+      { id: 'kick', role: 'drums', code: 's("bd*4")', muted: false, author: '', since: 1 },
+      { id: 'pad', role: 'pad', code: 'note("a3")', muted: false, author: '', since: 2 },
+    ];
+    for (let i = 0; i < 6; i++) expect(pickMutation({ ...SONG, layers }, Array(i).fill('texture'), 'breakdown').kind).not.toBe('rhythm');
   });
 });

@@ -3,6 +3,8 @@
 // an agent turn on the server makes a new version.
 import { z } from 'zod';
 import { WHEN, type Song } from './schema.ts';
+import type { SetState } from './set.ts';
+import type { SuggestionState } from './suggest.ts';
 import type { LayerChange } from './transition.ts';
 
 export const ROOM_ID = /^[a-z0-9][a-z0-9-]{2,31}$/;
@@ -29,6 +31,11 @@ export const ClientMessage = z.discriminatedUnion('type', [
   z.object({ type: z.literal('react'), version: z.number().int().min(1), reaction: z.enum(REACTIONS), on: z.boolean() }),
   z.object({ type: z.literal('ping'), t: z.number() }),
   z.object({ type: z.literal('resync') }),
+  // Autopilot: when nobody asks for anything, the band makes small mutations by itself.
+  z.object({ type: z.literal('autopilot'), on: z.boolean() }),
+  // Apply a suggestion (instant mode), or vote for one (vote mode, on the roadmap).
+  z.object({ type: z.literal('apply'), id: z.string().max(40) }),
+  z.object({ type: z.literal('vote'), id: z.string().max(40), on: z.boolean() }),
 ]);
 export type ClientMessage = z.infer<typeof ClientMessage>;
 
@@ -44,6 +51,10 @@ export type RoomClock = { cycle: number; serverMs: number; cps: number };
 // Clock segments sorted by time. A segment in the future is a tempo change on a bar boundary.
 export type Timeline = RoomClock[];
 export type When = (typeof WHEN)[number];
+// What the band "hears": an energy estimate (1 to 10) and short findings about the mix.
+// `findings` holds the same findings as data, for the suggestions.
+export type Finding = { kind: 'lowend' | 'register' | 'square' | 'same' | 'busy'; ids: string[] };
+export type MixReport = { energy: number; lines: string[]; findings?: Finding[] };
 
 export type ServerMessage =
   | {
@@ -59,6 +70,10 @@ export type ServerMessage =
       reactions: ReactionCounts;
       mine: { version: number; reaction: Reaction }[];
       clocks: Timeline;
+      set: SetState | null; // null until the first song
+      autopilot: boolean;
+      report: MixReport | null;
+      suggestions: SuggestionState | null;
     }
   // A new song version. Changed layers switch at room cycle `applyAt`, or as `changes` says per layer.
   | {
@@ -69,7 +84,13 @@ export type ServerMessage =
       clocks: Timeline;
       applyAt: number;
       changes: Record<string, LayerChange>;
+      report: MixReport | null;
     }
+  // The set moved to another phase (by time, by the band, or at the first song).
+  | { type: 'set'; seq: number; set: SetState }
+  | { type: 'autopilot'; seq: number; on: boolean; by: string }
+  // New ideas for the current version (after every change, phase move and reaction).
+  | { type: 'suggestions'; seq: number; suggestions: SuggestionState }
   | { type: 'chat'; seq: number; entry: ChatEntry }
   | { type: 'presence'; seq: number; users: User[] }
   | { type: 'agent'; seq: number; agent: AgentState }

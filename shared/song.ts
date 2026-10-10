@@ -1,9 +1,10 @@
 // Applies agent operations to a song, and writes a song as Strudel code for
 // people to read. Each operation either applies or gets an error message that
 // goes back to the agent.
+import { clampAuto } from './layer.ts';
 import {
-  LAYER_ID, MAX_BPM, MAX_LAYERS, MAX_SONG_BYTES, MIN_BPM, ROLES, ROOTS, SCALES,
-  type Op, type Song,
+  AUTO_BARS, AUTO_PARAMS, LAYER_ID, MAX_BPM, MAX_LAYERS, MAX_MOTIFS, MAX_SONG_BYTES, MAX_SWING, MAX_VARIATIONS, MIN_BPM,
+  MOTIF_NAME, MOTIF_NOTES, ROLES, ROOTS, SCALES, START_BARS, VARIATIONS, type Op, type Song,
 } from './schema.ts';
 import { validateLayer } from './validate.ts';
 
@@ -11,7 +12,14 @@ export type OpError = { index: number; op: Op['op']; message: string };
 
 export type ApplyResult = { song: Song; errors: OpError[] };
 
+// A layer that plays the bass drum: the four-on-the-floor must stay on the beat.
+export const isKick = (code: string) => /\b(bd|kick|clubkick|hardkick|gabba)\b/.test(code);
+
+const nearest = (value: number, allowed: readonly number[]) =>
+  allowed.reduce((best, option) => (Math.abs(option - value) < Math.abs(best - value) ? option : best));
+
 // `restore` returns an earlier version of the song, or undefined if there is none.
+// set_phase does not change the song: the room handles it.
 export function applyOps(
   song: Song,
   ops: Op[],
@@ -26,9 +34,57 @@ export function applyOps(
     return { song, errors: [{ index: 0, op: 'restore_version', message: 'restore_version must be the only operation' }] };
   }
 
+  const songOps = ops.filter((op) => op.op !== 'set_phase').length;
+  if (songOps === 0) return { song, errors };
+  const findLayer = (id: string) => next.layers.findIndex((layer) => layer.id === id);
+
   ops.forEach((op, index) => {
     const fail = (message: string) => errors.push({ index, op: op.op, message });
     switch (op.op) {
+      case 'set_phase':
+        return;
+      case 'set_motif': {
+        if (!MOTIF_NAME.test(op.name)) return fail(`motif name "${op.name}" must match ${MOTIF_NAME}`);
+        const motifs = { ...next.motifs };
+        if (op.notes.trim() === '') delete motifs[op.name];
+        else {
+          if (!MOTIF_NOTES.test(op.notes)) return fail('motif notes are scale degrees in mini-notation, for example "0 ~ 3 [0 5]"');
+          const verdict = validateLayer(`n("${op.notes}")`);
+          if (!verdict.ok) return fail(`motif "${op.name}": ${verdict.reason}`);
+          if (!(op.name in motifs) && Object.keys(motifs).length >= MAX_MOTIFS) return fail(`a song has at most ${MAX_MOTIFS} motifs`);
+          motifs[op.name] = op.notes.trim();
+        }
+        next.motifs = motifs;
+        return;
+      }
+      case 'set_swing':
+        if (!Number.isFinite(op.amount)) return fail('amount must be a number');
+        next.swing = Math.round(Math.min(MAX_SWING, Math.max(0, op.amount)) * 100) / 100;
+        return;
+      case 'automate': {
+        const at = findLayer(op.id);
+        if (at === -1) return fail(`there is no layer "${op.id}"`);
+        if (!AUTO_PARAMS.includes(op.param)) return fail(`unknown parameter "${op.param}"`);
+        const layer = next.layers[at];
+        const others = (layer.automation ?? []).filter((a) => a.param !== op.param);
+        const previous = layer.automation?.find((a) => a.param === op.param);
+        const automation = {
+          param: op.param, to: clampAuto(op.param, op.to), ...(previous ? { from: previous.to } : {}),
+          at: -1, start: nearest(op.start, START_BARS), bars: nearest(op.bars, AUTO_BARS),
+        };
+        next.layers[at] = { ...layer, automation: [...others, automation], author, since: version };
+        return;
+      }
+      case 'vary': {
+        const at = findLayer(op.id);
+        if (at === -1) return fail(`there is no layer "${op.id}"`);
+        const kinds = [...new Set(op.kinds)].filter((kind) => VARIATIONS.includes(kind));
+        if (kinds.length > MAX_VARIATIONS) return fail(`at most ${MAX_VARIATIONS} variations per layer`);
+        if (kinds.includes('offbeat') && isKick(next.layers[at].code)) return fail('offbeat moves the kick off the beat; on a kick use fill or ghost');
+        const { vary: _old, ...layer } = next.layers[at];
+        next.layers[at] = { ...layer, ...(kinds.length ? { vary: kinds } : {}), author, since: version };
+        return;
+      }
       case 'set_tempo':
         if (!Number.isFinite(op.bpm) || op.bpm < MIN_BPM || op.bpm > MAX_BPM) return fail(`bpm must be ${MIN_BPM} to ${MAX_BPM}`);
         next.bpm = Math.round(op.bpm);
@@ -45,7 +101,15 @@ export function applyOps(
         if (!verdict.ok) return fail(`layer "${op.id}": ${verdict.reason}`);
         const at = next.layers.findIndex((layer) => layer.id === op.id);
         if (at === -1 && next.layers.length >= MAX_LAYERS) return fail(`a song has at most ${MAX_LAYERS} layers`);
-        const layer = { id: op.id, role: op.role, code: op.code, muted: op.muted, author, since: version };
+        // A new code keeps the automations (they hold a filter position) but drops the
+        // variations. The same code (for example to mute or unmute) keeps both.
+        const old = at === -1 ? undefined : next.layers[at];
+        const automation = old?.automation;
+        const vary = old && old.code === op.code ? old.vary : undefined;
+        const layer = {
+          id: op.id, role: op.role, code: op.code, muted: op.muted, author, since: version,
+          ...(automation ? { automation } : {}), ...(vary ? { vary } : {}),
+        };
         if (at === -1) next.layers.push(layer);
         else next.layers[at] = layer;
         return;
@@ -66,7 +130,7 @@ export function applyOps(
   });
 
   // Each failed operation adds exactly one error. Without a change, keep the version.
-  if (errors.length === ops.length) return { song, errors };
+  if (errors.length === songOps) return { song, errors };
   if (JSON.stringify(next).length > MAX_SONG_BYTES) {
     return { song, errors: [...errors, { index: -1, op: 'set_layer', message: `the song is larger than ${MAX_SONG_BYTES} bytes` }] };
   }
@@ -77,7 +141,9 @@ export function applyOps(
 export function toStrudelCode(song: Song): string {
   // strudel.cc preloads the other sample sets; Dirt-Samples (breaks, rave, vocals) must be loaded.
   const lines = [`samples('github:tidalcycles/dirt-samples')`, `setcpm(${song.bpm}/4)`];
-  for (const layer of song.layers) lines.push(`${layer.muted ? '_' : ''}${layer.id}: ${layer.code}`);
+  // motif("a") is an app function, so strudel.cc gets the notes themselves.
+  const expand = (code: string) => code.replace(/\bmotif\("([a-z]{1,8})"\)/g, (call, name: string) => (song.motifs?.[name] ? `"${song.motifs[name]}"` : call));
+  for (const layer of song.layers) lines.push(`${layer.muted ? '_' : ''}${layer.id}: ${expand(layer.code)}`);
   return lines.join('\n');
 }
 

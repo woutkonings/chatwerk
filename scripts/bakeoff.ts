@@ -9,13 +9,36 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { runAgentTurn, type AgentOutcome } from '../server/agent.ts';
 import { stopCheckWorker } from '../server/check-song.ts';
+import { pickMutation, type MutationKind, type TurnMode } from '../server/harness.ts';
 import { MODEL_SETUPS, type SetupName } from '../server/llm.ts';
 import { PROMPT_VARIANTS, type ChatLine, type PromptVariant, type VersionLine } from '../server/prompt.ts';
+import type { MixReport } from '../shared/protocol.ts';
 import { EMPTY_SONG, type Song } from '../shared/schema.ts';
+import { DEFAULT_ARC, PHASE_LABEL, jumpTo, nextPhase, setPosition, type SetState } from '../shared/set.ts';
 import { strudelUrl, toStrudelCode } from '../shared/song.ts';
 
 // Each step is one agent turn. Several lines in a step arrive together (batching).
-const SESSIONS: Record<string, ChatLine[][]> = {
+// An autopilot step has no user message: a mutation, or the move to the next set phase.
+type Step = ChatLine[] | { autopilot: 'mutation' | 'phase' };
+// Simulated time between two steps, in bars.
+const BARS_PER_STEP = 32;
+
+const SESSIONS: Record<string, Step[]> = {
+  // A live set: requests, autopilot mutations and phase changes.
+  set: [
+    [{ author: 'Wout', text: 'Start a deep, hypnotic techno set at 126 bpm' }],
+    { autopilot: 'mutation' },
+    { autopilot: 'mutation' },
+    [{ author: 'Wout', text: 'more groove, it feels too straight' }],
+    { autopilot: 'mutation' },
+    { autopilot: 'phase' },
+    { autopilot: 'mutation' },
+    [{ author: 'Wout', text: 'build it up, open the filters' }],
+    { autopilot: 'phase' },
+    { autopilot: 'mutation' },
+    [{ author: 'Wout', text: 'go to the breakdown' }],
+    { autopilot: 'mutation' },
+  ],
   club: [
     [{ author: 'Alice', text: 'Start a dark underground techno groove, around 132 bpm' }],
     [{ author: 'Bob', text: 'Add a rolling bassline that pumps with the kick' }],
@@ -55,27 +78,52 @@ const SESSIONS: Record<string, ChatLine[][]> = {
   ],
 };
 
-type TurnLog = { messages: ChatLine[]; outcome: AgentOutcome; song: Song };
+type TurnLog = { messages: ChatLine[]; outcome: AgentOutcome; song: Song; setNote: string; report: MixReport | null };
 type Run = { label: string; setup: SetupName; prompt: PromptVariant };
 
-async function runSession(run: Run, session: ChatLine[][]): Promise<TurnLog[]> {
+async function runSession(run: Run, session: Step[]): Promise<TurnLog[]> {
   const versions: Song[] = [EMPTY_SONG];
   const history: VersionLine[] = [];
   const chat: ChatLine[] = [];
   const logs: TurnLog[] = [];
   let song = EMPTY_SONG;
+  let set: SetState | null = null;
+  let report: MixReport | null = null;
+  let cycle = 0;
+  const mutations: MutationKind[] = [];
 
-  for (const messages of session) {
+  for (const step of session) {
+    let mode: TurnMode = { kind: 'request' };
+    let messages: ChatLine[] = Array.isArray(step) ? step : [{ author: 'autopilot', text: '(no request: see the autopilot rule)' }];
+    if (!Array.isArray(step) && step.autopilot === 'mutation') {
+      const mutation = pickMutation(song, mutations, set ? set.arc[set.index].kind : undefined);
+      mutations.push(mutation.kind);
+      mode = { kind: 'mutation', idea: mutation.idea };
+    }
+    if (!Array.isArray(step) && step.autopilot === 'phase' && set) {
+      const from = PHASE_LABEL[set.arc[set.index].kind];
+      set = nextPhase(set, cycle);
+      mode = { kind: 'phase', from, to: PHASE_LABEL[set.arc[set.index].kind] };
+    }
+    const position = set ? setPosition(set, cycle) : null;
     const restore = (version: number) => versions.find((v) => v.version === version);
-    const context = { song, history: history.slice(-10), recentChat: chat.slice(-10), newMessages: messages };
+    const context = { song, history: history.slice(-10), recentChat: chat.slice(-10), newMessages: messages, set: position, report, mode };
     const outcome = await runAgentTurn(run.setup, context, restore, { prompt: run.prompt });
-    chat.push(...messages, { author: 'band', text: outcome.reply });
+    if (Array.isArray(step)) chat.push(...messages);
+    chat.push({ author: 'band', text: outcome.reply });
     if (outcome.changed) {
       song = outcome.song;
       versions.push(song);
       history.push({ version: song.version, author: messages.map((m) => m.author).join(', '), summary: outcome.turn?.summary ?? '' });
+      if (outcome.report) report = outcome.report;
+      set ??= { arc: DEFAULT_ARC, index: 0, phaseStart: cycle };
     }
-    logs.push({ messages, outcome, song });
+    const phaseOp = outcome.turn?.ops.find((op) => op.op === 'set_phase');
+    if (set && phaseOp?.op === 'set_phase') set = jumpTo(set, phaseOp.kind, cycle);
+    const setNote = position ? `${PHASE_LABEL[position.phase.kind]}, energy target ${position.energy}` : 'not started';
+    const label = mode.kind === 'phase' ? `phase ${mode.from} to ${mode.to}` : mode.kind === 'mutation' ? `mutation: ${mode.idea}` : '';
+    logs.push({ messages: Array.isArray(step) ? messages : [{ author: 'autopilot', text: label }], outcome, song, setNote, report });
+    cycle += BARS_PER_STEP;
     process.stdout.write('.');
   }
   return logs;
@@ -84,6 +132,10 @@ async function runSession(run: Run, session: ChatLine[][]): Promise<TurnLog[]> {
 // For example "set_layer bass (cut at +0)" or "remove_layer pad (fade 8 bars at +4)".
 function describeOp(op: AgentOutcome['turn'] extends infer T ? T extends { ops: (infer O)[] } ? O : never : never): string {
   if (op.op === 'set_tempo') return `set_tempo ${op.bpm}`;
+  if (op.op === 'automate') return `automate ${op.id} ${op.param} to ${op.to} over ${op.bars} at +${op.start}`;
+  if (op.op === 'set_swing') return `set_swing ${op.amount}`;
+  if (op.op === 'set_phase') return `set_phase ${op.kind}`;
+  if (op.op === 'vary') return `vary ${op.id} [${op.kinds.join(', ')}]`;
   if (op.op !== 'set_layer' && op.op !== 'remove_layer') return op.op;
   const { start, style, bars } = op.timing;
   return `${op.op} ${op.id} (${style === 'cut' ? 'cut' : `${style} ${bars} bars`} at +${start})`;
@@ -127,6 +179,7 @@ function report(results: Map<string, { run: Run; logs: TurnLog[] }>): string {
       if (outcome.turn) lines.push(`- Plan: ${outcome.turn.plan}`, `- Operations (when: ${outcome.turn.when}): ${outcome.turn.ops.map(describeOp).join(', ') || 'none'}`);
       if (outcome.harness.length) lines.push(`- Harness: ${outcome.harness.join('; ')}`);
       lines.push(`- Attempts: ${outcome.attempts.length} (${timing}), song version ${log.song.version}`);
+      lines.push(`- Set: ${log.setNote}. Mix report: ${log.report ? `energy ${log.report.energy}${log.report.lines.length ? `; ${log.report.lines.join(' ')}` : ''}` : 'none'}`);
       if (outcome.changed) lines.push(`- Listen: [version ${log.song.version} in strudel.cc](${strudelUrl(log.song)})`);
       for (const [i, attempt] of outcome.attempts.entries()) {
         if (attempt.problems.length) lines.push(`- Problems in attempt ${i + 1}: ${attempt.problems.join('; ')}`);

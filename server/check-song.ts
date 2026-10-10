@@ -34,11 +34,11 @@ async function runCheck(song: Song, timeoutMs: number): Promise<CheckResult> {
       worker.off('message', onMessage);
       ready = null;
       void worker.terminate();
-      resolve({ issues: [{ id: '*', message: `the song took longer than ${timeoutMs} ms to compute; make the layers less dense` }], eventsPerCycle: {} });
+      resolve({ issues: [{ id: '*', message: `the song took longer than ${timeoutMs} ms to compute; make the layers less dense` }], eventsPerCycle: {}, report: null });
     }, timeoutMs);
     const onMessage = (message: { ok: boolean; result?: CheckResult; message?: string }) => {
       clearTimeout(timer);
-      resolve(message.ok ? message.result! : { issues: [{ id: '*', message: `check failed: ${message.message}` }], eventsPerCycle: {} });
+      resolve(message.ok ? message.result! : { issues: [{ id: '*', message: `check failed: ${message.message}` }], eventsPerCycle: {}, report: null });
     };
     worker.once('message', onMessage);
     worker.postMessage(song);

@@ -1,6 +1,6 @@
-# music-chat: design
+# Chatwerk: design
 
-Version 0.3, 2026-10-10. Status: phases 0 to 3 are done. The app runs at https://dj-gen.woutkonings.com.
+Version 0.4, 2026-10-10. Status: phases 0 to 3 are done, and the harness (section 4.8) is built. The app runs at https://chatwerk.woutkonings.com.
 
 ## 1. Goal
 
@@ -137,6 +137,52 @@ The agent does not keep state between turns. This makes the Responses API state 
 3. Run the density check on the new song.
 4. If something fails, send the errors to the agent for one retry turn.
 5. If the retry also fails, apply the valid operations and tell the users which part failed.
+
+### 4.8 The harness (2026-10-10)
+
+The first live test showed two problems: every change was a hard switch, and the band changed the tempo for every new style (132, 140, 132 bpm within one minute). The prompt alone does not fix this. The harness is code around the agent: it gives the agent structure to work in, it tells the agent the rules for each turn, and it enforces the rules.
+
+**Transitions.** Every `set_layer`, `remove_layer` and `vary` has a timing: a start (0, 4, 8 or 16 bars after the boundary) and a style: `cut`, `fade` (an equal-power crossfade) or `filter` (a low-pass sweep, like a DJ) over 1 to 16 bars. The server turns the timing into room cycles, and the player renders it per layer (`shared/transition.ts`), so every listener hears the same fade. A big change can be staged: the new drums cut in on the phrase, the old layers filter out over 8 bars, the new bass comes in 8 bars later.
+
+**Tempo and key lock.** Code decides whether a message asks for another tempo (bpm, faster, slower, a number such as "at 170") or another key. Without such a message, the turn message says "locked", and the harness removes any `set_tempo` or `set_key` that the band still sends. A tempo change without a number moves at most 10 bpm. An allowed tempo change lands on a bar line as a new segment of the room clock (`Timeline` in `shared/protocol.ts`), so all clients switch on the same beat.
+
+**Moves that code makes.** The band can change a layer without new code:
+
+- `automate`: one parameter (lpf, hpf, lpq, room, delay, shape, gain) moves to a value over 1 to 32 bars and stays there. The next automation of the same parameter starts from that value.
+- `vary`: rhythm variations by code: thin, busier, fill, ghost, offbeat, shuffle (at most 3). `offbeat` is not allowed on a kick.
+- `set_swing`: one shuffle (0 to 0.3) for all layers, so the groove is shared.
+- `set_motif`: a short idea in scale degrees that layers share with `motif("a")`. A motif may appear in at most 2 layers, the prompt asks for a different transformation in each, and the mix report finds two layers that play the same notes in the same rhythm. `motif` is an app function, not Strudel, so the code view and the strudel.cc link get the notes themselves.
+
+**The live set.** A room plays a DJ set of an hour or more, not a song (`shared/set.ts`). The default arc has 9 phases (warm-up, build, peak, breakdown, build, peak, journey, peak, closing; about 72 minutes at 124 bpm) with an energy range per phase. The set starts with the first song. Every turn message says the phase, the bars left, the energy target and what the phase needs. `set_phase` jumps to a phase when a user asks; without layer changes in the same turn, a follow-up turn makes the transition. After the last phase, the set loops into a journey.
+
+**Autopilot.** When the autopilot is on (the default, any user can switch it), the room asks the band for a mutation after 32 bars without a change (about a minute), and for a transition when a phase ends. The harness picks the kind of mutation (rhythm, colour, bassline, harmony, texture, space): never one of the last two, only one that fits the phase (no drum twists in a breakdown), and a target layer that did not change for the longest time. Without this, the band repeated the same mutation ("thin the hats, close the bass filter") almost every time. The cost is about 0.03 dollars per hour per room, inside the daily budget.
+
+**Mix report.** After each new version, the song check renders the first 8 bars without audio (`shared/report.ts`) and measures: an energy estimate (1 to 10; kick, hats and a filtered bass are about 5, a full peak about 9, pads alone about 2), register clashes between pitched layers, a square groove (almost no hits on the odd 16ths), two layers that sound the same, an empty low end and a very busy mix. The next turn message includes the report and compares the energy with the target. The UI shows it as "what the band hears".
+
+**Coherence checks.** The song check also rejects a scale in another key than the song, and two delay settings on one effect bus (an orbit has one delay). These go back to the band as problems for the retry.
+
+**Not built, on purpose.** A change budget that stages more than 2 layer changes by itself: the user expected it to work against them. A two-step agent (a planner, then a coder): the harness already plays the planner role (mutation ideas, phase notes, the mix report, the moves), and a second model call doubles the latency. A bake-off can test it later.
+
+**Bake-off evidence.** `docs/bakeoff/*-switches.md` replays the first live test: 1 tempo change in 10 turns (only when asked), against 2 unasked changes in 4 turns before. `docs/bakeoff/*-set.md` simulates a live set with requests, mutations and phase changes.
+
+### 4.9 Suggestions (2026-10-10)
+
+The room shows up to 4 small ideas that any listener applies with one click, for example "Open the bass filter", "Ghost notes on hats", "Breakdown now" or "Back to v7". The user asked for ideas that are "super fast, cheap and ad hoc". So code makes them, without a model call (`server/suggest.ts`).
+
+- **Candidates.** After every song change, set phase move and reaction, code builds candidates from the current song: filter openings and closings, variations on hats and percussion (never a rhythm change on the kick), reverb and delay moves, taking a layer out or bringing it back, the breakdown and the drop, swing on or off, the next set phase, the version with the most reactions, and fixes for mix report findings (an octave move for a register clash, an offbeat move for two layers that sound the same).
+- **Ranking.** A heuristic ranker scores the candidates: the gap between the energy target and the measured energy, the report findings, the phase (no breakdown ideas at a peak, more space ideas in a breakdown), layers that did not change for a long time, and a small stable jitter per version. It keeps the best ideas of different kinds and for different layers. The ranker is a function type (`Ranker`), so a decision model such as Jev (section 5.1) can replace it later. The click rate per idea is the measure to compare them.
+- **Checks.** Ideas that can add events or change code (variations, octave moves, unmutes, restores) pass the song check before the room shows them. Filter moves, swing, phase moves and muting cannot break the check, so they skip it. The apply step always runs the check, so the mix report stays current.
+- **Instant mode (built).** The first click applies the idea at the next phrase, for everyone. The chat shows "Wout applied the idea: ...", and the version history shows the idea as the summary. One idea per 8 bars per room, so the set does not turn to chaos. While the band runs a turn, ideas wait. An idea of an old version is refused, and new ideas arrive. A phase idea moves the set at once, and a follow-up band turn makes the transition (the only idea that calls the model).
+
+**Roadmap: crowd vote.** The types and the protocol carry the vote mode already (`SuggestionState.mode`, `needed`, `SuggestionView.votes`, the client message `vote`, `RoomState.mineVotes`), so the UI and the protocol do not change. The plan:
+
+- The room switches to vote mode above about 3 listeners, or by a room setting.
+- Each listener has one vote per idea, and may vote for several ideas.
+- An idea applies at the next phrase when its votes reach `needed` (about half of the listeners, at least 2).
+- Votes belong to one version of the ideas. A new version clears them.
+- The chip shows the votes and the votes needed, and a countdown to the next phrase when an idea wins.
+
+**Later options.** A cue preview (a headphone icon plays the idea only for you for 8 bars, like a DJ cue; the player can already make local-only changes). Quick replies: 2 ideas that follow the band's last answer. A cheaper autopilot: it takes the top idea itself for small mutations, and calls the model only for new layers.
 
 ## 5. Model and API
 
@@ -489,7 +535,7 @@ music-chat/
 1. **Phase 0, bake-off.** It needs the OpenRouter key. Build `shared/` (schema, validator, interpreter), `server/llm.ts`, `server/prompt.ts` and `scripts/bakeoff.ts`. Output: `docs/bakeoff/<date>.md` and a model choice.
 2. **Phase 1, local demo (done).** Room server, WebSocket, agent queue with batching, versions in SQLite, the player with hap gate and limiter, layer cards, the code view. Tested with two users in Chrome (`localhost` and `127.0.0.1`). A phone on the LAN is not tested yet: on plain http, browsers block AudioWorklets, so some effects are silent there.
 3. **Phase 2, feel (done).** Room clock sync and `when` transitions, reactions, local mute and solo, "Open in strudel.cc".
-4. **Phase 3, hosting on `vps-main` (done, https://dj-gen.woutkonings.com).**
+4. **Phase 3, hosting on `vps-main` (done, https://chatwerk.woutkonings.com).**
    - The runbook `~/personal_repos/personal-life/vps-main/RUNBOOK.md` applies. The server uses nginx and certbot, not Caddy.
    - `Dockerfile` and `docker-compose.yml` are ready (port on `127.0.0.1` only, SQLite in a volume). The procedure is in [deploy.md](deploy.md).
    - The CSP is on in production and tested in Chrome. Chat rate limits, the turn log, the daily budget and the credits (footer) are built.

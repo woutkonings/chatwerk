@@ -4,7 +4,8 @@
 // Sync: the player follows the room clock, so every listener hears the same
 // bar at the same time, and a change with a transition lands on one beat.
 import * as strudel from '@strudel/web';
-import { buildLayer, type StrudelLib } from '../../shared/interpret.ts';
+import type { StrudelLib } from '../../shared/interpret.ts';
+import { layerPattern, layerSignature } from '../../shared/layer.ts';
 import { clockAt, roomCycle, type Timeline } from '../../shared/protocol.ts';
 import type { Song } from '../../shared/schema.ts';
 import { changeEnd, transitionLayer, type LayerChange } from '../../shared/transition.ts';
@@ -125,6 +126,7 @@ function guard(pattern: any, onError: (message: string) => void): any {
 }
 
 export type LayerErrors = Record<string, string>;
+export type LayerPreview = { t: number; length: number; velocity: number; midi: number | null; sound: string | null }[];
 
 const outputLatencyMs = () => {
   const context: AudioContext = strudel.getAudioContext();
@@ -134,9 +136,11 @@ const outputLatencyMs = () => {
 const SCHEDULER_LEAD_MS = 100;
 
 // One layer as this listener hears it. `pattern` includes a running transition;
-// after room cycle `settles`, the plain pattern sounds the same. A removed layer
-// has no code and no plain pattern, and stays only while it fades out.
-type Track = { code: string | null; plain: any | null; pattern: any | null; settles: number };
+// after room cycle `settles`, the plain pattern sounds the same. The signature
+// holds what makes the layer sound different (code, variations, automations,
+// swing). A removed layer has no signature and no plain pattern, and stays only
+// while it fades out.
+type Track = { signature: string | null; plain: any | null; pattern: any | null; settles: number };
 
 export class Player {
   playing = false;
@@ -192,12 +196,12 @@ export class Player {
     if (this.repl) this.applyTempo();
     const now = this.roomNow();
     const errors: LayerErrors = {};
-    const targets = new Map<string, { code: string; plain: any }>();
+    const targets = new Map<string, { signature: string; plain: any }>();
     for (const layer of song.layers) {
       if (layer.muted) continue;
       try {
-        const plain = guard(buildLayer(layer.code, lib), (message) => this.reportError(layer.id, message));
-        targets.set(layer.id, { code: layer.code, plain });
+        const plain = guard(layerPattern(layer, song, lib), (message) => this.reportError(layer.id, message));
+        targets.set(layer.id, { signature: layerSignature(layer, song), plain });
       } catch (error) {
         errors[layer.id] = (error as Error).message;
       }
@@ -205,15 +209,15 @@ export class Player {
     for (const id of new Set([...this.tracks.keys(), ...targets.keys()])) {
       const track = this.tracks.get(id);
       const target = targets.get(id) ?? null;
-      if ((track?.code ?? null) === (target?.code ?? null)) continue; // unchanged
+      if ((track?.signature ?? null) === (target?.signature ?? null)) continue; // unchanged
       const change = this.playing && applyAt !== null ? changes[id] ?? { at: applyAt, style: 'cut' as const, bars: 0 } : null;
       if (!change) {
-        this.tracks.set(id, { code: target?.code ?? null, plain: target?.plain ?? null, pattern: target?.plain ?? null, settles: -Infinity });
+        this.tracks.set(id, { signature: target?.signature ?? null, plain: target?.plain ?? null, pattern: target?.plain ?? null, settles: -Infinity });
         continue;
       }
       const from = track ? (track.settles <= now ? track.plain : track.pattern) : null;
       const pattern = transitionLayer(lib, from, target?.plain ?? null, change);
-      this.tracks.set(id, { code: target?.code ?? null, plain: target?.plain ?? null, pattern, settles: changeEnd(change) });
+      this.tracks.set(id, { signature: target?.signature ?? null, plain: target?.plain ?? null, pattern, settles: changeEnd(change) });
       if (target && replReady) preload(target.plain, change.at);
     }
     this.errors = errors;
@@ -248,7 +252,7 @@ export class Player {
 
   // Removed layers leave when their fade-out is over.
   private cleanUp(now: number) {
-    for (const [id, track] of this.tracks) if (track.code === null && track.settles <= now) this.tracks.delete(id);
+    for (const [id, track] of this.tracks) if (track.signature === null && track.settles <= now) this.tracks.delete(id);
   }
 
   private reportError(id: string, message: string) {
@@ -285,6 +289,34 @@ export class Player {
     if (!force && Math.abs(offset - this.offset) < MAX_DRIFT_CYCLES) return;
     this.offset = offset;
     this.apply();
+  }
+
+  // The events of one layer in one bar, for a visual preview (a step grid or a
+  // mini piano roll). `t` is the position in the bar (0 to 1), `velocity` 0 to
+  // 1, `midi` the note number of a pitched event. Works also when stopped.
+  preview(id: string, bar = Math.floor(this.roomNow())): LayerPreview {
+    const track = this.tracks.get(id);
+    const pattern = track?.plain;
+    if (!pattern) return [];
+    try {
+      return pattern.queryArc(bar, bar + 1)
+        .filter((hap: any) => hap.whole && hap.hasOnset())
+        .map((hap: any) => {
+          const value = hap.value ?? {};
+          let midi: number | null = typeof value.note === 'number' ? value.note : null;
+          if (typeof value.note === 'string') {
+            try {
+              midi = strudel.noteToMidi(value.note);
+            } catch {
+              midi = null;
+            }
+          }
+          const velocity = (typeof value.velocity === 'number' ? value.velocity : 1) * (typeof value.gain === 'number' ? Math.min(1, value.gain) : 1);
+          return { t: Number(hap.whole.begin) - bar, length: Number(hap.whole.end) - Number(hap.whole.begin), velocity, midi, sound: typeof value.s === 'string' ? value.s : null };
+        });
+    } catch {
+      return [];
+    }
   }
 
   // For tests in the browser console: the room cycle that this listener hears now.

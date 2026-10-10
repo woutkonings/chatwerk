@@ -29,7 +29,7 @@ function changedOutcome(context: TurnContext, turn: Partial<AgentTurn> = {}, bpm
     layers: [{ id: 'kick', role: 'drums', code: KICK, muted: false, author: 'x', since: version }],
   };
   const full: AgentTurn = { plan: '', ops: [], when: 'now', reply: 'done', summary: 'added a kick', ...turn };
-  return { song, changed: true, turn: full, reply: full.reply, problems: [], attempts: [], harness: [] };
+  return { song, changed: true, turn: full, reply: full.reply, problems: [], attempts: [], harness: [], report: null };
 }
 
 function setup(runTurn: RunTurn, options: { hasBudget?: () => boolean } = {}) {
@@ -200,7 +200,7 @@ describe('Room', () => {
 
   it('blocks a user from the band after three refused turns', async () => {
     const refused = async (context: TurnContext): Promise<AgentOutcome> => ({
-      song: context.song, changed: false, turn: null, reply: 'no', problems: ['the model refused the request'], attempts: [], harness: [],
+      song: context.song, changed: false, turn: null, reply: 'no', problems: ['the model refused the request'], attempts: [], harness: [], report: null,
     });
     const { join, say } = setup(refused);
     const mallory = join('Mallory');

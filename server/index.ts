@@ -1,4 +1,4 @@
-// The music-chat server: one Node process with HTTP and WebSocket on one port.
+// The Chatwerk server: one Node process with HTTP and WebSocket on one port.
 // In production it also serves the built web app (dist/web) with a strict
 // Content-Security-Policy. Start: npm start (production) or npm run dev.
 import { serve, upgradeWebSocket } from '@hono/node-server';
@@ -8,7 +8,7 @@ import { mkdirSync, readFileSync } from 'node:fs';
 import { WebSocketServer } from 'ws';
 import { ROOM_ID } from '../shared/protocol.ts';
 import { runAgentTurn } from './agent.ts';
-import { stopCheckWorker } from './check-song.ts';
+import { checkSongInWorker, stopCheckWorker } from './check-song.ts';
 import { Store } from './db.ts';
 import { MODEL_SETUPS, type SetupName } from './llm.ts';
 import { Room, type RunTurn, type Socket } from './room.ts';
@@ -29,7 +29,7 @@ const store = new Store(`${DATA_DIR}/music-chat.sqlite`);
 const runTurn: RunTurn = process.env.ANTHROPIC_API_KEY
   ? (context, restore, signal) => runAgentTurn(MODEL, context, restore, { signal })
   : async (context) => ({
-      song: context.song, changed: false, turn: null, problems: [], attempts: [], harness: [],
+      song: context.song, changed: false, turn: null, problems: [], attempts: [], harness: [], report: null,
       reply: 'The band has no API key yet. Set ANTHROPIC_API_KEY in .env and restart the server.',
     });
 
@@ -45,7 +45,7 @@ const evictTimers = new Map<string, ReturnType<typeof setTimeout>>();
 function openRoom(id: string): Room | undefined {
   let room = rooms.get(id);
   if (!room && rooms.size < MAX_ROOMS) {
-    room = new Room(id, { store, runTurn, hasBudget });
+    room = new Room(id, { store, runTurn, hasBudget, checkSong: (song) => checkSongInWorker(song) });
     rooms.set(id, room);
   }
   clearTimeout(evictTimers.get(id));
@@ -135,13 +135,20 @@ if (PRODUCTION) {
   app.get('*', (c) => c.html(indexHtml));
 }
 
+// The autopilot and the set phases move with time, so every room gets a tick.
+// Each second, so a new phase starts within a second of its time.
+const ticker = setInterval(() => {
+  for (const room of rooms.values()) room.tick();
+}, 1000);
+
 const wss = new WebSocketServer({ noServer: true, maxPayload: 8192 });
 const server = serve({ fetch: app.fetch, port: PORT, hostname: HOST, websocket: { server: wss } }, (info) => {
-  console.log(`music-chat on http://localhost:${info.port} (${PRODUCTION ? 'production' : 'development'}, model ${MODEL})`);
+  console.log(`Chatwerk on http://localhost:${info.port} (${PRODUCTION ? 'production' : 'development'}, model ${MODEL})`);
   if (!process.env.ANTHROPIC_API_KEY) console.warn('ANTHROPIC_API_KEY is not set: the band cannot answer.');
 });
 
 async function shutdown() {
+  clearInterval(ticker);
   server.close();
   await stopCheckWorker();
   store.close();

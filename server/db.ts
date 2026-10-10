@@ -41,6 +41,11 @@ create table if not exists turns (
   latency_ms integer not null
 );
 create index if not exists turns_time on turns (created_at);
+create table if not exists rooms (
+  room_id text primary key,
+  state_json text not null,
+  updated_at integer not null
+);
 `;
 
 export type TurnLog = { messages: unknown; outcome: unknown; costUsd: number; latencyMs: number };
@@ -111,6 +116,17 @@ export class Store {
   logTurn(roomId: string, log: TurnLog, at = Date.now()) {
     this.db.prepare('insert into turns (room_id, created_at, messages_json, outcome_json, cost_usd, latency_ms) values (?, ?, ?, ?, ?, ?)')
       .run(roomId, at, JSON.stringify(log.messages), JSON.stringify(log.outcome), log.costUsd, log.latencyMs);
+  }
+
+  // The room state that must survive a restart: the clock, the live set, the autopilot.
+  roomState<T>(roomId: string): T | undefined {
+    const row = this.db.prepare('select state_json from rooms where room_id = ?').get(roomId) as { state_json: string } | undefined;
+    return row ? (JSON.parse(row.state_json) as T) : undefined;
+  }
+
+  saveRoomState(roomId: string, state: unknown, at = Date.now()) {
+    this.db.prepare('insert into rooms (room_id, state_json, updated_at) values (?, ?, ?) on conflict (room_id) do update set state_json = excluded.state_json, updated_at = excluded.updated_at')
+      .run(roomId, JSON.stringify(state), at);
   }
 
   // The model cost of all rooms since a moment, for the daily budget.

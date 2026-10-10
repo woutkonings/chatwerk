@@ -11,6 +11,7 @@ export type StrudelLib = {
   Pattern: any;
   mini: (source: string) => unknown;
   scope: Record<string, any>;
+  motifs?: Record<string, string>; // the motifs of the song, for motif("a")
 };
 
 type Binding = { name: string; value: unknown } | null;
@@ -43,6 +44,12 @@ export function buildLayer(source: string, lib: StrudelLib): any {
         return (value: unknown) => evaluate(node.body, { name, value });
       }
       case 'CallExpression': {
+        if (node.callee.type === 'Identifier' && node.callee.name === 'motif') {
+          const name = node.arguments[0].value as string;
+          const notes = lib.motifs && Object.hasOwn(lib.motifs, name) ? lib.motifs[name] : undefined;
+          if (notes === undefined) throw new Error(`there is no motif "${name}"`);
+          return mini(notes);
+        }
         const args = node.arguments.map((arg: any) => evaluate(arg, binding));
         if (node.callee.type === 'Identifier') {
           return Reflect.apply(evaluate(node.callee, binding), undefined, args);

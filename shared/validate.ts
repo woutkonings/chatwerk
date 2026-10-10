@@ -7,6 +7,7 @@
 // The real limits are the density check (density.ts) and the clamps in the player.
 import { parse, type Node } from 'acorn';
 import { FUNCTION_SET, METHOD_SET, SIGNAL_SET } from './allowlist.ts';
+import { MOTIF_NAME } from './schema.ts';
 
 export type Verdict = { ok: true } | { ok: false; reason: string };
 
@@ -150,6 +151,14 @@ export function validateLayer(source: string): Verdict {
           if (node.arguments.length > MAX_ARGS) reject('too many arguments');
           const callee = node.callee;
           let name: string;
+          if (callee.type === 'Identifier' && callee.name === 'motif') {
+            // An app function, not Strudel: it reads a motif of the song by its name.
+            const arg = node.arguments[0];
+            if (node.arguments.length !== 1 || arg.type !== 'Literal' || typeof arg.value !== 'string' || !MOTIF_NAME.test(arg.value)) {
+              reject('motif needs one name, for example motif("a")');
+            }
+            return;
+          }
           if (callee.type === 'Identifier') {
             if (!FUNCTION_SET.has(callee.name)) reject(`unknown function "${callee.name}"`);
             name = callee.name;

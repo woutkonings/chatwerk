@@ -1,13 +1,13 @@
-# music-chat
+# Chatwerk
 
-Several users share one room, hear the same song and chat with an AI band. Only the band changes the song. The song is [Strudel](https://strudel.cc) code. The design is in [docs/design.md](docs/design.md).
+Chatwerk is a shared music room. Several users share one room, hear the same song and chat with an AI band. Only the band changes the song. The song is [Strudel](https://strudel.cc) code. The design is in [docs/design.md](docs/design.md).
 
 ## Status
 
 - Phase 0 (model bake-off): done. The band is Claude Haiku 5.5 with thinking off and system prompt v3.
 - Phase 1 (local demo): done. Room server, WebSocket, agent queue with batching, versions in SQLite, the player with the hap gate and the limiter, layer cards and the code view.
 - Phase 2 (feel): done. Room clock sync, transitions on the next bar or phrase, reactions, local mute and solo, "Open in strudel.cc".
-- Phase 3 (hosting): live at https://dj-gen.woutkonings.com on `vps-main`. See [docs/deploy.md](docs/deploy.md).
+- Phase 3 (hosting): live at https://chatwerk.woutkonings.com on `vps-main`. See [docs/deploy.md](docs/deploy.md).
 
 ## Run it
 

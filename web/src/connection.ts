@@ -2,9 +2,11 @@
 // snapshot and the events after it. A gap in the sequence numbers means a lost
 // event, so the client asks for a new snapshot. It reconnects after a drop.
 import type {
-  AgentState, ChatEntry, ClientMessage, Reaction, ReactionCounts, ServerMessage, Timeline, User, VersionInfo,
+  AgentState, ChatEntry, ClientMessage, MixReport, Reaction, ReactionCounts, ServerMessage, Timeline, User, VersionInfo,
 } from '../../shared/protocol.ts';
 import { EMPTY_SONG, type Song } from '../../shared/schema.ts';
+import type { SetState } from '../../shared/set.ts';
+import type { SuggestionState } from '../../shared/suggest.ts';
 import type { LayerChange } from '../../shared/transition.ts';
 import { ServerClock } from './server-clock.ts';
 
@@ -20,12 +22,17 @@ export type RoomState = {
   mine: Set<string>; // "version:reaction"
   clocks: Timeline;
   changes: Record<string, LayerChange>; // the layer changes of the newest version
+  set: SetState | null; // the live set: phases and the current phase
+  autopilot: boolean;
+  report: MixReport | null; // what the band hears in the newest version
+  suggestions: SuggestionState | null; // ideas that any listener can apply with one click
+  mineVotes: Set<string>; // vote mode (roadmap): the ideas this listener voted for
   notice: string | null;
 };
 
 export const INITIAL_STATE: RoomState = {
   status: 'connecting', you: null, song: EMPTY_SONG, versions: [], chat: [], users: [],
-  agent: { status: 'idle', queue: 0 }, reactions: {}, mine: new Set(), clocks: [], changes: {}, notice: null,
+  agent: { status: 'idle', queue: 0 }, reactions: {}, mine: new Set(), clocks: [], changes: {}, set: null, autopilot: true, report: null, suggestions: null, mineVotes: new Set(), notice: null,
 };
 
 const MAX_CHAT = 200;
@@ -97,6 +104,25 @@ export class Connection {
     this.update({ mine });
   }
 
+  setAutopilot(on: boolean) {
+    this.send({ type: 'autopilot', on });
+  }
+
+  // Instant mode: the idea lands at the next phrase for everyone.
+  applySuggestion(id: string) {
+    this.send({ type: 'apply', id });
+  }
+
+  // Vote mode (roadmap): the idea lands when enough listeners vote for it.
+  voteSuggestion(id: string) {
+    const mineVotes = new Set(this.state.mineVotes);
+    const on = !mineVotes.has(id);
+    if (on) mineVotes.add(id);
+    else mineVotes.delete(id);
+    this.send({ type: 'vote', id, on });
+    this.update({ mineVotes });
+  }
+
   dismissNotice() {
     this.update({ notice: null });
   }
@@ -120,6 +146,8 @@ export class Connection {
       this.update({
         status: 'open', you: message.you, song: message.song, versions: message.versions, chat: message.chat,
         users: message.users, agent: message.agent, reactions: message.reactions, clocks: message.clocks, changes: {},
+        set: message.set, autopilot: message.autopilot, report: message.report,
+        suggestions: message.suggestions, mineVotes: new Set(),
         mine: new Set(message.mine.map((m) => `${m.version}:${m.reaction}`)),
       });
       this.events.onSong(message.song, message.clocks, null, {});
@@ -135,7 +163,10 @@ export class Connection {
 
     switch (message.type) {
       case 'song':
-        this.update({ song: message.song, clocks: message.clocks, changes: message.changes, versions: [...this.state.versions, message.version] });
+        this.update({
+          song: message.song, clocks: message.clocks, changes: message.changes, report: message.report,
+          versions: [...this.state.versions, message.version],
+        });
         this.events.onSong(message.song, message.clocks, message.applyAt, message.changes);
         return;
       case 'chat':
@@ -147,6 +178,18 @@ export class Connection {
       case 'agent':
         this.update({ agent: message.agent });
         return;
+      case 'set':
+        this.update({ set: message.set });
+        return;
+      case 'autopilot':
+        this.update({ autopilot: message.on });
+        return;
+      case 'suggestions': {
+        // Votes belong to one version of the ideas.
+        const fresh = message.suggestions.version !== this.state.suggestions?.version;
+        this.update({ suggestions: message.suggestions, ...(fresh ? { mineVotes: new Set<string>() } : {}) });
+        return;
+      }
       case 'reactions':
         this.update({ reactions: { ...this.state.reactions, [message.version]: message.counts } });
         return;

@@ -1,0 +1,2498 @@
+{
+  "haiku/v3": {
+    "run": {
+      "label": "haiku/v3",
+      "setup": "haiku",
+      "prompt": "v3"
+    },
+    "logs": [
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "Start a deep, hypnotic techno set at 126 bpm"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 1,
+            "bpm": 126,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "kick",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "sub",
+                "role": "bass",
+                "code": "note(\"[~ a0]*4\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              }
+            ]
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Start a deep hypnotic techno set at 126 bpm with a 909 kick, offbeat bass and a filtered hat layer, in A minor for a dark feel.",
+            "ops": [
+              {
+                "op": "set_tempo",
+                "bpm": 126
+              },
+              {
+                "op": "set_key",
+                "root": "A",
+                "scale": "minor"
+              },
+              {
+                "op": "set_layer",
+                "id": "kick",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "cut",
+                  "bars": 1
+                }
+              },
+              {
+                "op": "set_layer",
+                "id": "sub",
+                "role": "bass",
+                "code": "note(\"[~ a0]*4\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "fade",
+                  "bars": 4
+                }
+              },
+              {
+                "op": "set_layer",
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+                "muted": false,
+                "timing": {
+                  "start": 4,
+                  "style": "filter",
+                  "bars": 8
+                }
+              }
+            ],
+            "when": "now",
+            "reply": "Wout, the set is starting at 126 bpm in A minor with kick, sub bass and hats, and the hats filter in after 4 bars.",
+            "summary": "Initial deep techno set at 126 bpm"
+          },
+          "reply": "Wout, the set is starting at 126 bpm in A minor with kick, sub bass and hats, and the hats filter in after 4 bars.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 6280,
+              "costUsd": 0.0014564,
+              "usage": {
+                "input": 164,
+                "cacheWrite": 9336,
+                "cacheRead": 0,
+                "output": 546
+              },
+              "problems": []
+            }
+          ],
+          "harness": [],
+          "report": {
+            "energy": 6.5,
+            "lines": []
+          }
+        },
+        "song": {
+          "version": 1,
+          "bpm": 126,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "kick",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "sub",
+              "role": "bass",
+              "code": "note(\"[~ a0]*4\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            }
+          ]
+        },
+        "setNote": "not started",
+        "report": {
+          "energy": 6.5,
+          "lines": []
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "autopilot",
+            "text": "mutation: give the rhythm of \"kick\" a new twist: a vary, or a new pattern with some syncopation."
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 2,
+            "bpm": 126,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "kick",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 2,
+                "vary": [
+                  "thin",
+                  "offbeat"
+                ]
+              },
+              {
+                "id": "sub",
+                "role": "bass",
+                "code": "note(\"[~ a0]*4\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+                "muted": false,
+                "author": "Wout",
+                "since": 1
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+                "muted": false,
+                "author": "autopilot",
+                "since": 2,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 2500,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 8
+                  }
+                ]
+              }
+            ]
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Energy is above target, so I'll thin the kick with a syncopated ghost feel and filter the hats down to pull energy back.",
+            "ops": [
+              {
+                "op": "vary",
+                "id": "kick",
+                "kinds": [
+                  "thin",
+                  "offbeat"
+                ],
+                "timing": {
+                  "start": 0,
+                  "style": "fade",
+                  "bars": 4
+                }
+              },
+              {
+                "op": "automate",
+                "id": "hats",
+                "param": "lpf",
+                "to": 2500,
+                "start": 0,
+                "bars": 8
+              }
+            ],
+            "when": "next_bar",
+            "reply": "Autopilot: thinning the kick and easing the hats.",
+            "summary": "Thin kick, soften hats"
+          },
+          "reply": "Autopilot: thinning the kick and easing the hats.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2316,
+              "costUsd": 0.00027036000000000003,
+              "usage": {
+                "input": 815,
+                "cacheWrite": 0,
+                "cacheRead": 9336,
+                "output": 191
+              },
+              "problems": []
+            }
+          ],
+          "harness": [],
+          "report": {
+            "energy": 5,
+            "lines": []
+          }
+        },
+        "song": {
+          "version": 2,
+          "bpm": 126,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "kick",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 2,
+              "vary": [
+                "thin",
+                "offbeat"
+              ]
+            },
+            {
+              "id": "sub",
+              "role": "bass",
+              "code": "note(\"[~ a0]*4\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+              "muted": false,
+              "author": "Wout",
+              "since": 1
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+              "muted": false,
+              "author": "autopilot",
+              "since": 2,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 2500,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 8
+                }
+              ]
+            }
+          ]
+        },
+        "setNote": "Warm-up, energy target 4.1",
+        "report": {
+          "energy": 5,
+          "lines": []
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "autopilot",
+            "text": "mutation: change the colour of \"sub\" over 8 to 32 bars with automate (a filter, room, delay or shape)."
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 3,
+            "bpm": 126,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "kick",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 2,
+                "vary": [
+                  "thin",
+                  "offbeat"
+                ]
+              },
+              {
+                "id": "sub",
+                "role": "bass",
+                "code": "note(\"[~ a0]*4\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 3,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 400,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ]
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+                "muted": false,
+                "author": "autopilot",
+                "since": 2,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 2500,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 8
+                  }
+                ]
+              }
+            ]
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Slowly darken the sub bass with a filter sweep over 16 bars to fit the warm-up energy.",
+            "ops": [
+              {
+                "op": "automate",
+                "id": "sub",
+                "param": "lpf",
+                "to": 400,
+                "start": 0,
+                "bars": 16
+              }
+            ],
+            "when": "next_bar",
+            "reply": "Autopilot: darkening the sub bass slowly.",
+            "summary": "Autopilot darkens sub bass"
+          },
+          "reply": "Autopilot: darkening the sub bass slowly.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2115,
+              "costUsd": 0.00025026,
+              "usage": {
+                "input": 899,
+                "cacheWrite": 0,
+                "cacheRead": 9336,
+                "output": 134
+              },
+              "problems": []
+            }
+          ],
+          "harness": [],
+          "report": {
+            "energy": 5,
+            "lines": []
+          }
+        },
+        "song": {
+          "version": 3,
+          "bpm": 126,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "kick",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 2,
+              "vary": [
+                "thin",
+                "offbeat"
+              ]
+            },
+            {
+              "id": "sub",
+              "role": "bass",
+              "code": "note(\"[~ a0]*4\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 3,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 400,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ]
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+              "muted": false,
+              "author": "autopilot",
+              "since": 2,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 2500,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 8
+                }
+              ]
+            }
+          ]
+        },
+        "setNote": "Warm-up, energy target 4.3",
+        "report": {
+          "energy": 5,
+          "lines": []
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "more groove, it feels too straight"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 4,
+            "bpm": 126,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "kick",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 2,
+                "vary": [
+                  "thin",
+                  "offbeat"
+                ]
+              },
+              {
+                "id": "sub",
+                "role": "bass",
+                "code": "note(\"[~ a0]*4\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 3,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 400,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ]
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+                "muted": false,
+                "author": "Wout",
+                "since": 4,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 2500,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 8
+                  }
+                ],
+                "vary": [
+                  "ghost",
+                  "shuffle"
+                ]
+              }
+            ],
+            "swing": 0.1
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Add swing to the groove and offset the hats with a light shuffle plus a ghost variation, keeping the energy in the warm-up phase.",
+            "ops": [
+              {
+                "op": "set_swing",
+                "amount": 0.1
+              },
+              {
+                "op": "vary",
+                "id": "hats",
+                "kinds": [
+                  "ghost",
+                  "shuffle"
+                ],
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 4
+                }
+              }
+            ],
+            "when": "next_bar",
+            "reply": "Wout, I added a light swing and ghost hits to the hats for more groove.",
+            "summary": "Add swing and hat ghost notes"
+          },
+          "reply": "Wout, I added a light swing and ghost hits to the hats for more groove.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2208,
+              "costUsd": 0.00027106,
+              "usage": {
+                "input": 857,
+                "cacheWrite": 0,
+                "cacheRead": 9336,
+                "output": 184
+              },
+              "problems": []
+            }
+          ],
+          "harness": [],
+          "report": {
+            "energy": 5.5,
+            "lines": []
+          }
+        },
+        "song": {
+          "version": 4,
+          "bpm": 126,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "kick",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 2,
+              "vary": [
+                "thin",
+                "offbeat"
+              ]
+            },
+            {
+              "id": "sub",
+              "role": "bass",
+              "code": "note(\"[~ a0]*4\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 3,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 400,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ]
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+              "muted": false,
+              "author": "Wout",
+              "since": 4,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 2500,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 8
+                }
+              ],
+              "vary": [
+                "ghost",
+                "shuffle"
+              ]
+            }
+          ],
+          "swing": 0.1
+        },
+        "setNote": "Warm-up, energy target 4.4",
+        "report": {
+          "energy": 5.5,
+          "lines": []
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "autopilot",
+            "text": "mutation: change the bassline \"sub\" a little: other notes or another rhythm, with the same root and groove."
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 5,
+            "bpm": 126,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "kick",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 2,
+                "vary": [
+                  "thin",
+                  "offbeat"
+                ]
+              },
+              {
+                "id": "sub",
+                "role": "bass",
+                "code": "note(\"[~ a0] [~ ~ a0 ~] [~ a0] [a0 ~ ~ e0]\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 5,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 400,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ]
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+                "muted": false,
+                "author": "Wout",
+                "since": 4,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 2500,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 8
+                  }
+                ],
+                "vary": [
+                  "ghost",
+                  "shuffle"
+                ]
+              }
+            ],
+            "swing": 0.1
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Autopilot mutation: shift the sub bass into a syncopated pattern on the same A root, keeping the groove and warm-up energy.",
+            "ops": [
+              {
+                "op": "set_layer",
+                "id": "sub",
+                "role": "bass",
+                "code": "note(\"[~ a0] [~ ~ a0 ~] [~ a0] [a0 ~ ~ e0]\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 8
+                }
+              }
+            ],
+            "when": "next_bar",
+            "reply": "Autopilot: syncopating the sub bass a little.",
+            "summary": "Autopilot syncopates sub bass"
+          },
+          "reply": "Autopilot: syncopating the sub bass a little.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 1772,
+              "costUsd": 0.00031856,
+              "usage": {
+                "input": 1062,
+                "cacheWrite": 0,
+                "cacheRead": 9336,
+                "output": 238
+              },
+              "problems": []
+            }
+          ],
+          "harness": [],
+          "report": {
+            "energy": 5.5,
+            "lines": []
+          }
+        },
+        "song": {
+          "version": 5,
+          "bpm": 126,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "kick",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 2,
+              "vary": [
+                "thin",
+                "offbeat"
+              ]
+            },
+            {
+              "id": "sub",
+              "role": "bass",
+              "code": "note(\"[~ a0] [~ ~ a0 ~] [~ a0] [a0 ~ ~ e0]\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 5,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 400,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ]
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+              "muted": false,
+              "author": "Wout",
+              "since": 4,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 2500,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 8
+                }
+              ],
+              "vary": [
+                "ghost",
+                "shuffle"
+              ]
+            }
+          ],
+          "swing": 0.1
+        },
+        "setNote": "Warm-up, energy target 4.5",
+        "report": {
+          "energy": 5.5,
+          "lines": []
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "autopilot",
+            "text": "phase Warm-up to Build"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 6,
+            "bpm": 126,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "kick",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 2,
+                "vary": [
+                  "thin",
+                  "offbeat"
+                ]
+              },
+              {
+                "id": "sub",
+                "role": "bass",
+                "code": "note(\"[~ a0] [~ ~ a0 ~] [~ a0] [a0 ~ ~ e0]\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 5,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 400,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ]
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+                "muted": false,
+                "author": "autopilot",
+                "since": 6,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 6000,
+                    "from": 2500,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ],
+                "vary": [
+                  "ghost",
+                  "shuffle"
+                ]
+              },
+              {
+                "id": "rim",
+                "role": "perc",
+                "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 6
+              }
+            ],
+            "swing": 0.1
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Build phase: add a percussion layer and open the hat filter in stages to raise energy toward the peak.",
+            "ops": [
+              {
+                "op": "set_layer",
+                "id": "rim",
+                "role": "perc",
+                "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 8
+                }
+              },
+              {
+                "op": "automate",
+                "id": "hats",
+                "param": "lpf",
+                "to": 6000,
+                "start": 0,
+                "bars": 16
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Autopilot, percussion comes in and the hats open up over the next phrases.",
+            "summary": "Build: add rim percussion, open hats"
+          },
+          "reply": "Autopilot, percussion comes in and the hats open up over the next phrases.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2161,
+              "costUsd": 0.00033856,
+              "usage": {
+                "input": 1087,
+                "cacheWrite": 0,
+                "cacheRead": 9336,
+                "output": 273
+              },
+              "problems": []
+            }
+          ],
+          "harness": [],
+          "report": {
+            "energy": 6,
+            "lines": []
+          }
+        },
+        "song": {
+          "version": 6,
+          "bpm": 126,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "kick",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 2,
+              "vary": [
+                "thin",
+                "offbeat"
+              ]
+            },
+            {
+              "id": "sub",
+              "role": "bass",
+              "code": "note(\"[~ a0] [~ ~ a0 ~] [~ a0] [a0 ~ ~ e0]\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 5,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 400,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ]
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+              "muted": false,
+              "author": "autopilot",
+              "since": 6,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 6000,
+                  "from": 2500,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ],
+              "vary": [
+                "ghost",
+                "shuffle"
+              ]
+            },
+            {
+              "id": "rim",
+              "role": "perc",
+              "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 6
+            }
+          ],
+          "swing": 0.1
+        },
+        "setNote": "Build, energy target 5",
+        "report": {
+          "energy": 6,
+          "lines": []
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "autopilot",
+            "text": "mutation: add one small new layer (a texture, percussion or a short stab) that fades or filters in."
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 7,
+            "bpm": 126,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "kick",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 2,
+                "vary": [
+                  "thin",
+                  "offbeat"
+                ]
+              },
+              {
+                "id": "sub",
+                "role": "bass",
+                "code": "note(\"[~ a0] [~ ~ a0 ~] [~ a0] [a0 ~ ~ e0]\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 5,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 400,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ]
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+                "muted": false,
+                "author": "autopilot",
+                "since": 6,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 6000,
+                    "from": 2500,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ],
+                "vary": [
+                  "ghost",
+                  "shuffle"
+                ]
+              },
+              {
+                "id": "rim",
+                "role": "perc",
+                "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 7,
+                "automation": [
+                  {
+                    "param": "gain",
+                    "to": 0.2,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 8
+                  }
+                ]
+              },
+              {
+                "id": "shaker",
+                "role": "perc",
+                "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+                "muted": false,
+                "author": "autopilot",
+                "since": 7
+              }
+            ],
+            "swing": 0.1
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Replace the unknown shaker sound with the allowed shaker_small sample, keeping the same soft fade-in and easing the rim.",
+            "ops": [
+              {
+                "op": "set_layer",
+                "id": "shaker",
+                "role": "perc",
+                "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "fade",
+                  "bars": 8
+                }
+              },
+              {
+                "op": "automate",
+                "id": "rim",
+                "param": "gain",
+                "to": 0.2,
+                "start": 0,
+                "bars": 8
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Autopilot: adding a soft shaker and easing the rim.",
+            "summary": "Build: soft shaker fades in"
+          },
+          "reply": "Autopilot: adding a soft shaker and easing the rim.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2314,
+              "costUsd": 0.00034786,
+              "usage": {
+                "input": 1310,
+                "cacheWrite": 0,
+                "cacheRead": 9336,
+                "output": 247
+              },
+              "problems": [
+                "layer \"shaker\" uses unknown sounds: shaker"
+              ]
+            },
+            {
+              "latencyMs": 2085,
+              "costUsd": 0.00037746000000000004,
+              "usage": {
+                "input": 1606,
+                "cacheWrite": 0,
+                "cacheRead": 9336,
+                "output": 247
+              },
+              "problems": []
+            }
+          ],
+          "harness": [],
+          "report": {
+            "energy": 6.5,
+            "lines": []
+          }
+        },
+        "song": {
+          "version": 7,
+          "bpm": 126,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "kick",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 2,
+              "vary": [
+                "thin",
+                "offbeat"
+              ]
+            },
+            {
+              "id": "sub",
+              "role": "bass",
+              "code": "note(\"[~ a0] [~ ~ a0 ~] [~ a0] [a0 ~ ~ e0]\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 5,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 400,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ]
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+              "muted": false,
+              "author": "autopilot",
+              "since": 6,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 6000,
+                  "from": 2500,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ],
+              "vary": [
+                "ghost",
+                "shuffle"
+              ]
+            },
+            {
+              "id": "rim",
+              "role": "perc",
+              "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 7,
+              "automation": [
+                {
+                  "param": "gain",
+                  "to": 0.2,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 8
+                }
+              ]
+            },
+            {
+              "id": "shaker",
+              "role": "perc",
+              "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+              "muted": false,
+              "author": "autopilot",
+              "since": 7
+            }
+          ],
+          "swing": 0.1
+        },
+        "setNote": "Build, energy target 5.3",
+        "report": {
+          "energy": 6.5,
+          "lines": []
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "build it up, open the filters"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 8,
+            "bpm": 126,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "kick",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 2,
+                "vary": [
+                  "thin",
+                  "offbeat"
+                ]
+              },
+              {
+                "id": "sub",
+                "role": "bass",
+                "code": "note(\"[~ a0] [~ ~ a0 ~] [~ a0] [a0 ~ ~ e0]\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+                "muted": false,
+                "author": "Wout",
+                "since": 8,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 900,
+                    "from": 400,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ]
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+                "muted": false,
+                "author": "Wout",
+                "since": 8,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 12000,
+                    "from": 6000,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ],
+                "vary": [
+                  "ghost",
+                  "shuffle"
+                ]
+              },
+              {
+                "id": "rim",
+                "role": "perc",
+                "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 8,
+                "automation": [
+                  {
+                    "param": "gain",
+                    "to": 0.3,
+                    "from": 0.2,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 8
+                  }
+                ]
+              },
+              {
+                "id": "shaker",
+                "role": "perc",
+                "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+                "muted": false,
+                "author": "autopilot",
+                "since": 7
+              }
+            ],
+            "swing": 0.1
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Build the tension for Wout by opening the filters over 16 bars and easing the rim back a touch. Energy is already above target, so only subtle opening moves.",
+            "ops": [
+              {
+                "op": "automate",
+                "id": "sub",
+                "param": "lpf",
+                "to": 900,
+                "start": 0,
+                "bars": 16
+              },
+              {
+                "op": "automate",
+                "id": "hats",
+                "param": "lpf",
+                "to": 12000,
+                "start": 0,
+                "bars": 16
+              },
+              {
+                "op": "automate",
+                "id": "rim",
+                "param": "gain",
+                "to": 0.3,
+                "start": 0,
+                "bars": 8
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Wout, the filters open over the next 16 bars, the bass and hats getting brighter while the build keeps rising.",
+            "summary": "Build: open sub and hat filters"
+          },
+          "reply": "Wout, the filters open over the next 16 bars, the bass and hats getting brighter while the build keeps rising.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2401,
+              "costUsd": 0.00035036,
+              "usage": {
+                "input": 1360,
+                "cacheWrite": 0,
+                "cacheRead": 9336,
+                "output": 242
+              },
+              "problems": []
+            }
+          ],
+          "harness": [],
+          "report": {
+            "energy": 5.5,
+            "lines": []
+          }
+        },
+        "song": {
+          "version": 8,
+          "bpm": 126,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "kick",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 2,
+              "vary": [
+                "thin",
+                "offbeat"
+              ]
+            },
+            {
+              "id": "sub",
+              "role": "bass",
+              "code": "note(\"[~ a0] [~ ~ a0 ~] [~ a0] [a0 ~ ~ e0]\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+              "muted": false,
+              "author": "Wout",
+              "since": 8,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 900,
+                  "from": 400,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ]
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+              "muted": false,
+              "author": "Wout",
+              "since": 8,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 12000,
+                  "from": 6000,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ],
+              "vary": [
+                "ghost",
+                "shuffle"
+              ]
+            },
+            {
+              "id": "rim",
+              "role": "perc",
+              "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 8,
+              "automation": [
+                {
+                  "param": "gain",
+                  "to": 0.3,
+                  "from": 0.2,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 8
+                }
+              ]
+            },
+            {
+              "id": "shaker",
+              "role": "perc",
+              "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+              "muted": false,
+              "author": "autopilot",
+              "since": 7
+            }
+          ],
+          "swing": 0.1
+        },
+        "setNote": "Build, energy target 5.5",
+        "report": {
+          "energy": 5.5,
+          "lines": []
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "autopilot",
+            "text": "phase Build to Peak"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 9,
+            "bpm": 126,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "kick",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 2,
+                "vary": [
+                  "thin",
+                  "offbeat"
+                ]
+              },
+              {
+                "id": "sub",
+                "role": "bass",
+                "code": "note(\"[~ a0] [~ ~ a0 ~] [~ a0] [a0 ~ ~ e0]\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 9,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 1400,
+                    "from": 900,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ]
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+                "muted": false,
+                "author": "Wout",
+                "since": 8,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 12000,
+                    "from": 6000,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ],
+                "vary": [
+                  "ghost",
+                  "shuffle"
+                ]
+              },
+              {
+                "id": "rim",
+                "role": "perc",
+                "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 8,
+                "automation": [
+                  {
+                    "param": "gain",
+                    "to": 0.3,
+                    "from": 0.2,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 8
+                  }
+                ]
+              },
+              {
+                "id": "shaker",
+                "role": "perc",
+                "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+                "muted": false,
+                "author": "autopilot",
+                "since": 7
+              },
+              {
+                "id": "clap",
+                "role": "perc",
+                "code": "s(\"~ cp ~ cp\").bank(\"RolandTR909\").gain(.42).room(.35).roomsize(3).late(1/64)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 9
+              },
+              {
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).decay(.18).sustain(0).gain(.3).delay(.6).delaytime(3/16).delayfeedback(.6).room(.5).roomsize(6).orbit(3)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 9
+              }
+            ],
+            "swing": 0.1
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Move from Build to Peak: bring in a driving bass and clap, raise the energy toward 7.5 by opening the sub bass filter and adding a stab on the next phrase.",
+            "ops": [
+              {
+                "op": "set_layer",
+                "id": "clap",
+                "role": "perc",
+                "code": "s(\"~ cp ~ cp\").bank(\"RolandTR909\").gain(.42).room(.35).roomsize(3).late(1/64)",
+                "muted": false,
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 8
+                }
+              },
+              {
+                "op": "automate",
+                "id": "sub",
+                "param": "lpf",
+                "to": 1400,
+                "start": 0,
+                "bars": 16
+              },
+              {
+                "op": "set_layer",
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).decay(.18).sustain(0).gain(.3).delay(.6).delaytime(3/16).delayfeedback(.6).room(.5).roomsize(6).orbit(3)",
+                "muted": false,
+                "timing": {
+                  "start": 8,
+                  "style": "fade",
+                  "bars": 4
+                }
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Autopilot: Peak push in, clap and stabs arrive.",
+            "summary": "Peak: clap, stabs, brighter sub"
+          },
+          "reply": "Autopilot: Peak push in, clap and stabs arrive.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 3074,
+              "costUsd": 0.00048036,
+              "usage": {
+                "input": 1500,
+                "cacheWrite": 0,
+                "cacheRead": 9336,
+                "output": 474
+              },
+              "problems": []
+            }
+          ],
+          "harness": [],
+          "report": {
+            "energy": 6.5,
+            "lines": []
+          }
+        },
+        "song": {
+          "version": 9,
+          "bpm": 126,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "kick",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 2,
+              "vary": [
+                "thin",
+                "offbeat"
+              ]
+            },
+            {
+              "id": "sub",
+              "role": "bass",
+              "code": "note(\"[~ a0] [~ ~ a0 ~] [~ a0] [a0 ~ ~ e0]\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 9,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 1400,
+                  "from": 900,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ]
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+              "muted": false,
+              "author": "Wout",
+              "since": 8,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 12000,
+                  "from": 6000,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ],
+              "vary": [
+                "ghost",
+                "shuffle"
+              ]
+            },
+            {
+              "id": "rim",
+              "role": "perc",
+              "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 8,
+              "automation": [
+                {
+                  "param": "gain",
+                  "to": 0.3,
+                  "from": 0.2,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 8
+                }
+              ]
+            },
+            {
+              "id": "shaker",
+              "role": "perc",
+              "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+              "muted": false,
+              "author": "autopilot",
+              "since": 7
+            },
+            {
+              "id": "clap",
+              "role": "perc",
+              "code": "s(\"~ cp ~ cp\").bank(\"RolandTR909\").gain(.42).room(.35).roomsize(3).late(1/64)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 9
+            },
+            {
+              "id": "stab",
+              "role": "chords",
+              "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).decay(.18).sustain(0).gain(.3).delay(.6).delaytime(3/16).delayfeedback(.6).room(.5).roomsize(6).orbit(3)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 9
+            }
+          ],
+          "swing": 0.1
+        },
+        "setNote": "Peak, energy target 7.5",
+        "report": {
+          "energy": 6.5,
+          "lines": []
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "autopilot",
+            "text": "mutation: give the rhythm of \"kick\" a new twist: a vary, or a new pattern with some syncopation."
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 10,
+            "bpm": 126,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "kick",
+                "role": "drums",
+                "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 10,
+                "vary": [
+                  "fill",
+                  "offbeat"
+                ]
+              },
+              {
+                "id": "sub",
+                "role": "bass",
+                "code": "note(\"[~ a0] [~ ~ a0 ~] [~ a0] [a0 ~ ~ e0]\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 9,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 1400,
+                    "from": 900,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ]
+              },
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+                "muted": false,
+                "author": "Wout",
+                "since": 8,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 12000,
+                    "from": 6000,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ],
+                "vary": [
+                  "ghost",
+                  "shuffle"
+                ]
+              },
+              {
+                "id": "rim",
+                "role": "perc",
+                "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 8,
+                "automation": [
+                  {
+                    "param": "gain",
+                    "to": 0.3,
+                    "from": 0.2,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 8
+                  }
+                ]
+              },
+              {
+                "id": "shaker",
+                "role": "perc",
+                "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+                "muted": false,
+                "author": "autopilot",
+                "since": 7
+              },
+              {
+                "id": "clap",
+                "role": "perc",
+                "code": "s(\"~ cp ~ cp\").bank(\"RolandTR909\").gain(.42).room(.35).roomsize(3).late(1/64)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 9
+              },
+              {
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).decay(.18).sustain(0).gain(.3).delay(.6).delaytime(3/16).delayfeedback(.6).room(.5).roomsize(6).orbit(3)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 9
+              }
+            ],
+            "swing": 0.1
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Give the kick a syncopated twist with a fill on every 4th bar, lifting the energy toward the peak target without removing anything.",
+            "ops": [
+              {
+                "op": "vary",
+                "id": "kick",
+                "kinds": [
+                  "fill",
+                  "offbeat"
+                ],
+                "timing": {
+                  "start": 0,
+                  "style": "cut",
+                  "bars": 1
+                }
+              }
+            ],
+            "when": "next_bar",
+            "reply": "Autopilot: kick gets a syncopated fill now.",
+            "summary": "Kick syncopation and fills at peak"
+          },
+          "reply": "Autopilot: kick gets a syncopated fill now.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2085,
+              "costUsd": 0.00035466,
+              "usage": {
+                "input": 1823,
+                "cacheWrite": 0,
+                "cacheRead": 9336,
+                "output": 158
+              },
+              "problems": []
+            }
+          ],
+          "harness": [],
+          "report": {
+            "energy": 6.5,
+            "lines": []
+          }
+        },
+        "song": {
+          "version": 10,
+          "bpm": 126,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "kick",
+              "role": "drums",
+              "code": "s(\"bd*4\").bank(\"RolandTR909\").gain(.95).shape(.2).duckorbit(2).duckattack(.16).duckdepth(.9)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 10,
+              "vary": [
+                "fill",
+                "offbeat"
+              ]
+            },
+            {
+              "id": "sub",
+              "role": "bass",
+              "code": "note(\"[~ a0] [~ ~ a0 ~] [~ a0] [a0 ~ ~ e0]\").s(\"sine\").decay(.25).sustain(0).gain(.8).orbit(2)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 9,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 1400,
+                  "from": 900,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ]
+            },
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+              "muted": false,
+              "author": "Wout",
+              "since": 8,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 12000,
+                  "from": 6000,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ],
+              "vary": [
+                "ghost",
+                "shuffle"
+              ]
+            },
+            {
+              "id": "rim",
+              "role": "perc",
+              "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 8,
+              "automation": [
+                {
+                  "param": "gain",
+                  "to": 0.3,
+                  "from": 0.2,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 8
+                }
+              ]
+            },
+            {
+              "id": "shaker",
+              "role": "perc",
+              "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+              "muted": false,
+              "author": "autopilot",
+              "since": 7
+            },
+            {
+              "id": "clap",
+              "role": "perc",
+              "code": "s(\"~ cp ~ cp\").bank(\"RolandTR909\").gain(.42).room(.35).roomsize(3).late(1/64)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 9
+            },
+            {
+              "id": "stab",
+              "role": "chords",
+              "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).decay(.18).sustain(0).gain(.3).delay(.6).delaytime(3/16).delayfeedback(.6).room(.5).roomsize(6).orbit(3)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 9
+            }
+          ],
+          "swing": 0.1
+        },
+        "setNote": "Peak, energy target 7.6",
+        "report": {
+          "energy": 6.5,
+          "lines": []
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "Wout",
+            "text": "go to the breakdown"
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 11,
+            "bpm": 126,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+                "muted": false,
+                "author": "Wout",
+                "since": 8,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 12000,
+                    "from": 6000,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ],
+                "vary": [
+                  "ghost",
+                  "shuffle"
+                ]
+              },
+              {
+                "id": "rim",
+                "role": "perc",
+                "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 8,
+                "automation": [
+                  {
+                    "param": "gain",
+                    "to": 0.3,
+                    "from": 0.2,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 8
+                  }
+                ]
+              },
+              {
+                "id": "shaker",
+                "role": "perc",
+                "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+                "muted": false,
+                "author": "autopilot",
+                "since": 7
+              },
+              {
+                "id": "clap",
+                "role": "perc",
+                "code": "s(\"~ cp ~ cp\").bank(\"RolandTR909\").gain(.42).room(.35).roomsize(3).late(1/64)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 9
+              },
+              {
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).decay(.18).sustain(0).gain(.3).delay(.6).delaytime(3/16).delayfeedback(.6).room(.5).roomsize(6).orbit(3)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 9
+              }
+            ],
+            "swing": 0.1
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Wout asks for the breakdown. I will set the phase to breakdown and take the kick and sub bass out with a filter over 4 bars, so the groove drops and the pads and stabs carry the room.",
+            "ops": [
+              {
+                "op": "set_phase",
+                "kind": "breakdown"
+              },
+              {
+                "op": "remove_layer",
+                "id": "kick",
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 4
+                }
+              },
+              {
+                "op": "remove_layer",
+                "id": "sub",
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 4
+                }
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Wout, going to the breakdown: the kick and sub bass filter out over the next phrase, and the stabs and percussion carry the space.",
+            "summary": "Breakdown: kick and sub filter out"
+          },
+          "reply": "Wout, going to the breakdown: the kick and sub bass filter out over the next phrase, and the stabs and percussion carry the space.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2231,
+              "costUsd": 0.00039256,
+              "usage": {
+                "input": 1722,
+                "cacheWrite": 0,
+                "cacheRead": 9336,
+                "output": 254
+              },
+              "problems": []
+            }
+          ],
+          "harness": [],
+          "report": {
+            "energy": 5,
+            "lines": [
+              "No low end: no four-on-the-floor kick and no bass."
+            ]
+          }
+        },
+        "song": {
+          "version": 11,
+          "bpm": 126,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+              "muted": false,
+              "author": "Wout",
+              "since": 8,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 12000,
+                  "from": 6000,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ],
+              "vary": [
+                "ghost",
+                "shuffle"
+              ]
+            },
+            {
+              "id": "rim",
+              "role": "perc",
+              "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 8,
+              "automation": [
+                {
+                  "param": "gain",
+                  "to": 0.3,
+                  "from": 0.2,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 8
+                }
+              ]
+            },
+            {
+              "id": "shaker",
+              "role": "perc",
+              "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+              "muted": false,
+              "author": "autopilot",
+              "since": 7
+            },
+            {
+              "id": "clap",
+              "role": "perc",
+              "code": "s(\"~ cp ~ cp\").bank(\"RolandTR909\").gain(.42).room(.35).roomsize(3).late(1/64)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 9
+            },
+            {
+              "id": "stab",
+              "role": "chords",
+              "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).decay(.18).sustain(0).gain(.3).delay(.6).delaytime(3/16).delayfeedback(.6).room(.5).roomsize(6).orbit(3)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 9
+            }
+          ],
+          "swing": 0.1
+        },
+        "setNote": "Peak, energy target 7.7",
+        "report": {
+          "energy": 5,
+          "lines": [
+            "No low end: no four-on-the-floor kick and no bass."
+          ]
+        }
+      },
+      {
+        "messages": [
+          {
+            "author": "autopilot",
+            "text": "mutation: make space: take \"shaker\" out for a while with a fade or a filter (muted: true), or thin it."
+          }
+        ],
+        "outcome": {
+          "song": {
+            "version": 12,
+            "bpm": 126,
+            "root": "A",
+            "scale": "minor",
+            "layers": [
+              {
+                "id": "hats",
+                "role": "perc",
+                "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+                "muted": false,
+                "author": "autopilot",
+                "since": 12,
+                "automation": [
+                  {
+                    "param": "lpf",
+                    "to": 12000,
+                    "from": 6000,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 16
+                  }
+                ],
+                "vary": [
+                  "thin"
+                ]
+              },
+              {
+                "id": "rim",
+                "role": "perc",
+                "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+                "muted": false,
+                "author": "Wout",
+                "since": 8,
+                "automation": [
+                  {
+                    "param": "gain",
+                    "to": 0.3,
+                    "from": 0.2,
+                    "at": -1,
+                    "start": 0,
+                    "bars": 8
+                  }
+                ]
+              },
+              {
+                "id": "shaker",
+                "role": "perc",
+                "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+                "muted": true,
+                "author": "autopilot",
+                "since": 12
+              },
+              {
+                "id": "clap",
+                "role": "perc",
+                "code": "s(\"~ cp ~ cp\").bank(\"RolandTR909\").gain(.42).room(.35).roomsize(3).late(1/64)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 9
+              },
+              {
+                "id": "stab",
+                "role": "chords",
+                "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).decay(.18).sustain(0).gain(.3).delay(.6).delaytime(3/16).delayfeedback(.6).room(.5).roomsize(6).orbit(3)",
+                "muted": false,
+                "author": "autopilot",
+                "since": 9
+              }
+            ],
+            "swing": 0.1
+          },
+          "changed": true,
+          "turn": {
+            "plan": "Breakdown needs more space, so I'll thin the hats and take the shaker out with a filter sweep.",
+            "ops": [
+              {
+                "op": "set_layer",
+                "id": "shaker",
+                "role": "perc",
+                "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+                "muted": true,
+                "timing": {
+                  "start": 0,
+                  "style": "filter",
+                  "bars": 8
+                }
+              },
+              {
+                "op": "vary",
+                "id": "hats",
+                "kinds": [
+                  "thin"
+                ],
+                "timing": {
+                  "start": 0,
+                  "style": "fade",
+                  "bars": 4
+                }
+              }
+            ],
+            "when": "next_phrase",
+            "reply": "Autopilot: making space now, shaker fades out.",
+            "summary": "Breakdown: shaker out, hats thinned"
+          },
+          "reply": "Autopilot: making space now, shaker fades out.",
+          "problems": [],
+          "attempts": [
+            {
+              "latencyMs": 2204,
+              "costUsd": 0.00038016000000000005,
+              "usage": {
+                "input": 1628,
+                "cacheWrite": 0,
+                "cacheRead": 9336,
+                "output": 248
+              },
+              "problems": []
+            }
+          ],
+          "harness": [],
+          "report": {
+            "energy": 3.5,
+            "lines": [
+              "No low end: no four-on-the-floor kick and no bass."
+            ]
+          }
+        },
+        "song": {
+          "version": 12,
+          "bpm": 126,
+          "root": "A",
+          "scale": "minor",
+          "layers": [
+            {
+              "id": "hats",
+              "role": "perc",
+              "code": "s(\"hh*16\").bank(\"RolandTR909\").velocity(\"[.6 .9 .7 1]*4\").gain(.3).hpf(4000).cut(1).degradeBy(.08).hpf(sine.range(3000, 6000).slow(32))",
+              "muted": false,
+              "author": "autopilot",
+              "since": 12,
+              "automation": [
+                {
+                  "param": "lpf",
+                  "to": 12000,
+                  "from": 6000,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 16
+                }
+              ],
+              "vary": [
+                "thin"
+              ]
+            },
+            {
+              "id": "rim",
+              "role": "perc",
+              "code": "s(\"rim(5,16,3)\").bank(\"RolandTR909\").gain(.3).delay(.45).delaytime(3/16).delayfeedback(.6).pan(sine.slow(7)).orbit(3)",
+              "muted": false,
+              "author": "Wout",
+              "since": 8,
+              "automation": [
+                {
+                  "param": "gain",
+                  "to": 0.3,
+                  "from": 0.2,
+                  "at": -1,
+                  "start": 0,
+                  "bars": 8
+                }
+              ]
+            },
+            {
+              "id": "shaker",
+              "role": "perc",
+              "code": "s(\"shaker_small*8\").gain(.22).hpf(5000).degradeBy(.2).pan(sine.slow(9))",
+              "muted": true,
+              "author": "autopilot",
+              "since": 12
+            },
+            {
+              "id": "clap",
+              "role": "perc",
+              "code": "s(\"~ cp ~ cp\").bank(\"RolandTR909\").gain(.42).room(.35).roomsize(3).late(1/64)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 9
+            },
+            {
+              "id": "stab",
+              "role": "chords",
+              "code": "chord(\"<Am9!3 Dm9>\").struct(\"[~ ~ x ~] ~ [~ x ~ ~] ~\").voicing().s(\"sawtooth\").lpf(sine.range(600, 1600).slow(32)).decay(.18).sustain(0).gain(.3).delay(.6).delaytime(3/16).delayfeedback(.6).room(.5).roomsize(6).orbit(3)",
+              "muted": false,
+              "author": "autopilot",
+              "since": 9
+            }
+          ],
+          "swing": 0.1
+        },
+        "setNote": "Breakdown, energy target 2.8",
+        "report": {
+          "energy": 3.5,
+          "lines": [
+            "No low end: no four-on-the-floor kick and no bass."
+          ]
+        }
+      }
+    ]
+  }
+}
