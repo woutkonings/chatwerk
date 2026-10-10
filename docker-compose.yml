@@ -1,0 +1,14 @@
+services:
+  music-chat:
+    build: .
+    restart: unless-stopped
+    # ANTHROPIC_API_KEY and MUSIC_CHAT_DAILY_USD (chmod 600 .env on the server).
+    env_file: .env
+    # Only nginx on the same host may reach the app. Without 127.0.0.1, Docker opens the port to the internet.
+    ports:
+      - "127.0.0.1:8787:8787"
+    volumes:
+      - music-chat-data:/data
+
+volumes:
+  music-chat-data:
